@@ -4,8 +4,16 @@ flask-boilerplate
 Boilerplate to speedup flask development with best practices.
 
 
-Continuous Integration
-----------------------
+Project Status
+--------------
+
+- **develop** branch:
+
+[![Build Status](https://travis-ci.org/teracy-official/flask-boilerplate.svg?branch=develop)](https://travis-ci.org/teracy-official/flask-boilerplate)
+
+- **master** branch:
+
+[![Build Status](https://travis-ci.org/teracy-official/flask-boilerplate.svg?branch=master)](https://travis-ci.org/teracy-official/flask-boilerplate)
 
 
 Usage
