@@ -3,7 +3,7 @@ resolve:
 
 check-style:
 	flake8 --max-complexity 12 .
-	pylint --rcfile .pylintrc *.py **/*.py || exit 0
+	pylint --rcfile .pylintrc *.py || exit 0
 
 test:
 	coverage erase
