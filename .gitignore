@@ -182,6 +182,10 @@ docs/_build/
 # PyBuilder
 target/
 
+# jenkins build stuff
+pep8_report.txt
+pylint_report.txt
+
 
 # teracy
 !.rbenv-version

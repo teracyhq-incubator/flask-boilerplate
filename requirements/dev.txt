@@ -1,1 +1,6 @@
 -r common.txt
+
+flake8
+coverage
+pylint
+nose
