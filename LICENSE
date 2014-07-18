@@ -1,60 +1,3 @@
-flask-boilerplate
-=================
-
-Boilerplate to speedup flask development with best practices.
-
-
-Continuous Integration
-----------------------
-
-
-Usage
------
-
-
-Installation
-------------
-
-
-Configuration
--------------
-
-
-Contributing
-------------
-
-- File issues at https://issues.teracy.org/browse/<project_key>
-
-- Follow Teracy's workflow at http://dev.teracy.org/docs/develop/workflow.html
-
-Discussions
------------
-
-Join us:
-
-- https://groups.google.com/forum/#!forum/teracy
-
-- https://www.facebook.com/groups/teracy
-
-Get our news:
-
-- https://www.facebook.com/teracy.official
-
-- https://twitter.com/teracy_official
-
-
-Author and contributors
------------------------
-
-See more details at `AUTHORS.md` and `CONTRIBUTORS.md` files.
-
-
-License
--------
-
-BSD License
-
-```
 Copyright (c) Teracy, Inc. and individual contributors.
 All rights reserved.
 
@@ -82,5 +25,3 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-```
