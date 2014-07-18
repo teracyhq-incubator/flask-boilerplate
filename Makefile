@@ -2,7 +2,7 @@ resolve:
 	pip install -r requirements/dev.txt
 
 check-style:
-	flake8 --max-complexity 12 .
+	flake8 --max-complexity 12 . || exit 0
 	pylint --rcfile .pylintrc *.py || exit 0
 
 test:
