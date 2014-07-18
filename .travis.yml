@@ -11,3 +11,8 @@ script:
 after_success:
   - make report-coverage
   - make check-style
+
+notifications:
+  slack:
+    on_success: change
+    secure: QedXqeE/BFXuNfMwTiN9c4EzCZilVBdDT+0ASapjur6mNxukiZ90EnnJ1mJBhSdWA3jEJwAXrR2cLZDaw126nGWoc3Ivh0Q2QB2fzrKDkperyuQt7O8ZNj963ccVNq9TAHknSzibX8byABN725v+1WkBdciI8gNDliFOpmqpIy0=
