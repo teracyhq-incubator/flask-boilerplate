@@ -2,7 +2,12 @@
 
 """main views"""
 
-from . import main
+from flask import Blueprint
+
+
+__all__ = ['main']
+
+main = Blueprint('main', __name__)
 
 
 @main.route('/')
