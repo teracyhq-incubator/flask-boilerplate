@@ -2,12 +2,11 @@
 
 """tests for app.utils"""
 
-import unittest
-
+from tests.unit import UnitTestCase
 from app import utils
 
 
-class UtilsTestCase(unittest.TestCase):
+class UtilsTestCase(UnitTestCase):
 
     def test_instance_path(self):
         self.assertIsNotNone(utils.INSTANCE_FOLDER_PATH,

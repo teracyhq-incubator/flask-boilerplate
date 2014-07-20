@@ -3,8 +3,8 @@
 """tests app package"""
 
 import os
-import unittest
 
+from tests.unit import UnitTestCase
 from app import create_app
 from app.config import BaseConfig
 
@@ -12,12 +12,14 @@ from . import APP_TEST_PATH
 
 
 class TestConfig(BaseConfig):
+    """TestConfig for test"""
     DEBUG = True
     TESTING = True
     TEST_KEY = 'test'
 
 
-class AppTestCase(unittest.TestCase):
+class AppTestCase(UnitTestCase):
+    """AppTestCase"""
 
     def test_create_app_default(self):
         created_app = create_app()
