@@ -9,6 +9,8 @@ script:
 
 after_success:
   - make report-coverage
+  - pip install --quiet python-coveralls
+  - coveralls
   - make check-style
 
 notifications:
