@@ -10,11 +10,12 @@ Project Status
 - **develop** branch:
 
 [![Build Status](https://travis-ci.org/teracy-official/flask-boilerplate.svg?branch=develop)](https://travis-ci.org/teracy-official/flask-boilerplate)
+[![Coverage Status](https://coveralls.io/repos/teracy-official/flask-boilerplate/badge.png?branch=develop)](https://coveralls.io/r/teracy-official/flask-boilerplate?branch=develop)
 
 - **master** branch:
 
 [![Build Status](https://travis-ci.org/teracy-official/flask-boilerplate.svg?branch=master)](https://travis-ci.org/teracy-official/flask-boilerplate)
-
+[![Coverage Status](https://coveralls.io/repos/teracy-official/flask-boilerplate/badge.png?branch=master)](https://coveralls.io/r/teracy-official/flask-boilerplate?branch=master)
 
 Usage
 -----
