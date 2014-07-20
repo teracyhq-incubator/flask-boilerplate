@@ -2,14 +2,15 @@
 
 """command management for the flask app"""
 
+import os
+
 from flask.ext.script import Manager
 
 from app import create_app
 
+app = create_app(os.getenv('APP_CONFIG', 'dev'), os.getenv('APP_INSTANCE_PATH', None))
 
-manager = Manager(create_app)
+manager = Manager(app)
 
-manager.add_option("-c", "--config", dest="config", required=False)
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     manager.run()
