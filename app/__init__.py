@@ -2,4 +2,4 @@
 
 """main application entry point"""
 
-from app import create_app
+from .app import create_app
