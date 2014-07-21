@@ -1,6 +1,12 @@
+# requirements/dev.txt: development dependency requirements
+
 -r common.txt
 
-flake8
+# style check
 coverage
-pylint
+flake8
 nose
+pylint
+
+# extensions
+flask-debugtoolbar

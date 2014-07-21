@@ -1,3 +1,5 @@
+# requirements/common.txt: common dependency requirements
+
 flask
 flask-script
 gunicorn

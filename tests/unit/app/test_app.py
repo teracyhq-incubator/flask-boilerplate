@@ -5,7 +5,7 @@
 import os
 
 from tests.unit import UnitTestCase
-from app import create_app
+from app.app import create_app
 from app.config import BaseConfig
 
 from . import APP_TEST_PATH

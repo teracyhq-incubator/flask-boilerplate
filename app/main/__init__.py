@@ -2,4 +2,4 @@
 
 """main blueprint"""
 
-from .views import main
+from .views import module

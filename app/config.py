@@ -19,6 +19,8 @@ class DevConfig(BaseConfig):
 class TestConfig(BaseConfig):
     """TestConfig for testing configuration"""
 
+    DEBUG = True
+
     TESTING = True
 
 # for stag or prod config, must not be included on project version controlled

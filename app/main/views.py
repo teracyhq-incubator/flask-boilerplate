@@ -2,15 +2,15 @@
 
 """main views"""
 
-from flask import Blueprint
+from flask import Blueprint, render_template
 
 
-__all__ = ['main']
+__all__ = ['module']
 
-main = Blueprint('main', __name__)
+module = Blueprint('main', __name__)
 
 
-@main.route('/')
+@module.route('/')
 def hello_world():
     """hello world view"""
-    return '<h1>Hello World!</h1>'
+    return render_template('main/hello.html')
