@@ -192,6 +192,7 @@ pylint_report.txt
 !.travis.yml
 !.gitkeep
 !.gitmodules
+!.pylintrc
 
 # docs
 _build
