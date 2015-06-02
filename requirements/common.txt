@@ -4,3 +4,4 @@ flask
 flask-script
 gunicorn
 flask-heroku
+Flask-Migrate

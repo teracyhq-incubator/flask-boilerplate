@@ -7,7 +7,7 @@ from flask import Flask
 
 from .config import BaseConfig, MODES
 from .utils import INSTANCE_FOLDER_PATH
-from .extensions import heroku
+from .extensions import heroku, db, migrate
 
 __all__ = ['create_app']
 
@@ -66,6 +66,8 @@ def _configure_extensions(app):
         DebugToolbarExtension(app)
 
     heroku.init_app(app)
+    db.init_app(app)
+    migrate.init_app(app, db)
 
 
 def _configure_logging(app):
