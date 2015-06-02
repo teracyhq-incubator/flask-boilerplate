@@ -7,6 +7,7 @@ from flask import Flask
 
 from .config import BaseConfig, MODES
 from .utils import INSTANCE_FOLDER_PATH
+from .extensions import heroku
 
 __all__ = ['create_app']
 
@@ -63,6 +64,8 @@ def _configure_extensions(app):
     if app.config['DEBUG']:
         from flask.ext.debugtoolbar import DebugToolbarExtension
         DebugToolbarExtension(app)
+
+    heroku.init_app(app)
 
 
 def _configure_logging(app):
