@@ -5,3 +5,5 @@ flask-script
 gunicorn
 flask-heroku
 Flask-Migrate
+
+MySQL-python
