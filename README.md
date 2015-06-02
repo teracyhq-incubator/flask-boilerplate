@@ -9,13 +9,13 @@ Project Status
 
 - **develop** branch:
 
-[![Build Status](https://travis-ci.org/teracy-official/flask-boilerplate.svg?branch=develop)](https://travis-ci.org/teracy-official/flask-boilerplate)
-[![Coverage Status](https://coveralls.io/repos/teracy-official/flask-boilerplate/badge.png?branch=develop)](https://coveralls.io/r/teracy-official/flask-boilerplate?branch=develop)
+[![Build Status](https://travis-ci.org/teracyhq/flask-boilerplate.svg?branch=develop)](https://travis-ci.org/teracyhq/flask-boilerplate)
+[![Coverage Status](https://coveralls.io/repos/teracyhq/flask-boilerplate/badge.png?branch=develop)](https://coveralls.io/r/teracyhq/flask-boilerplate?branch=develop)
 
 - **master** branch:
 
-[![Build Status](https://travis-ci.org/teracy-official/flask-boilerplate.svg?branch=master)](https://travis-ci.org/teracy-official/flask-boilerplate)
-[![Coverage Status](https://coveralls.io/repos/teracy-official/flask-boilerplate/badge.png?branch=master)](https://coveralls.io/r/teracy-official/flask-boilerplate?branch=master)
+[![Build Status](https://travis-ci.org/teracyhq/flask-boilerplate.svg?branch=master)](https://travis-ci.org/teracyhq/flask-boilerplate)
+[![Coverage Status](https://coveralls.io/repos/teracyhq/flask-boilerplate/badge.png?branch=master)](https://coveralls.io/r/teracyhq/flask-boilerplate?branch=master)
 
 Usage
 -----
@@ -34,7 +34,7 @@ Contributing
 
 - File issues at https://issues.teracy.org/browse/<project_key>
 
-- Follow Teracy's workflow at http://dev.teracy.org/docs/develop/workflow.html
+- Follow Teracy's workflow at http://dev.teracy.org/docs/workflow.html
 
 Discussions
 -----------
@@ -47,9 +47,9 @@ Join us:
 
 Get our news:
 
-- https://www.facebook.com/teracy.official
+- https://www.facebook.com/teracyhq
 
-- https://twitter.com/teracy_official
+- https://twitter.com/teracyhq
 
 
 Author and contributors
