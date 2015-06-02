@@ -17,68 +17,16 @@ Project Status
 [![Build Status](https://travis-ci.org/teracyhq/flask-boilerplate.svg?branch=master)](https://travis-ci.org/teracyhq/flask-boilerplate)
 [![Coverage Status](https://coveralls.io/repos/teracyhq/flask-boilerplate/badge.png?branch=master)](https://coveralls.io/r/teracyhq/flask-boilerplate?branch=master)
 
+Usage
+-----
 
-How to develop
---------------
 
-- Make sure `teracy-dev` is running for development environment: http://dev.teracy.org/docs/getting_started.html
+Installation
+------------
 
-- And then:
 
-```
-$ vagrant ssh
-$ ws
-$ cd personal
-$ git clone ssh://git@code.teracy.org/clients/new-iorad.git
-$ cd new-iorad
-$ mkvirtualenv new-iorad
-$ make resolve
-```
-
-- Create `new_iorad` database
-
-```
-$ mysql -u root -pteracy
-Welcome to the MySQL monitor.  Commands end with ; or \g.
-Your MySQL connection id is 468
-Server version: 5.5.43-0ubuntu0.12.04.1 (Ubuntu)
-
-Copyright (c) 2000, 2015, Oracle and/or its affiliates. All rights reserved.
-
-Oracle is a registered trademark of Oracle Corporation and/or its
-affiliates. Other names may be trademarks of their respective
-owners.
-
-Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
-
-mysql> create database new_iorad;
-Query OK, 1 row affected (0.01 sec)
-
-mysql> exit
-
-```
-
-- export DATABASE_URL for the flask web app:
-
-```
-$ export DATABASE_URL=mysql+mysqldb://root:teracy@localhost:3306/new_iorad
-```
-
-- migrate to latest db:
-
-```
-$ python manage.py db upgrade
-```
-
-- run the app:
- 
- ```
-$ python manage.py runserver -h 0.0.0.0
- * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
- * Restarting with stat
- ```
-
-Then open your browser at: http://localhost:5000
+Configuration
+-------------
 
 
 Contributing
@@ -88,9 +36,60 @@ Contributing
 
 - Follow Teracy's workflow at http://dev.teracy.org/docs/workflow.html
 
+Discussions
+-----------
+
+Join us:
+
+- https://groups.google.com/forum/#!forum/teracy
+
+- https://www.facebook.com/groups/teracy
+
+Get our news:
+
+- https://www.facebook.com/teracyhq
+
+- https://twitter.com/teracyhq
+
 
 Author and contributors
 -----------------------
 
 See more details at `AUTHORS.md` and `CONTRIBUTORS.md` files.
 
+
+License
+-------
+
+BSD License
+
+```
+Copyright (c) Teracy, Inc. and individual contributors.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+    1. Redistributions of source code must retain the above copyright notice,
+       this list of conditions and the following disclaimer.
+
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+
+    3. Neither the name of Teracy, Inc. nor the names of its contributors may be used
+       to endorse or promote products derived from this software without
+       specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+```
