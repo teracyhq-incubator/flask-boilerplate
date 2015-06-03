@@ -3,5 +3,8 @@
 flask
 flask-script
 gunicorn
+
+# extensions
+flask-debugtoolbar
 flask-heroku
 Flask-Migrate

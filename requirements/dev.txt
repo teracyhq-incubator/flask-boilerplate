@@ -7,6 +7,3 @@ coverage
 flake8
 nose
 pylint
-
-# extensions
-flask-debugtoolbar
