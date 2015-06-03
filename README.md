@@ -9,6 +9,8 @@ Project Status
 
 - **develop** branch:
 
+Heroku deployment: https://flbp.herokuapp.com/
+
 [![Build Status](https://travis-ci.org/teracyhq/flask-boilerplate.svg?branch=develop)](https://travis-ci.org/teracyhq/flask-boilerplate)
 [![Coverage Status](https://coveralls.io/repos/teracyhq/flask-boilerplate/badge.png?branch=develop)](https://coveralls.io/r/teracyhq/flask-boilerplate?branch=develop)
 
