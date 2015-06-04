@@ -7,7 +7,7 @@ from flask import Flask
 
 from .config import BaseConfig, MODES
 from .utils import INSTANCE_FOLDER_PATH
-from .extensions import heroku, db, migrate
+from .extensions import init_app
 
 __all__ = ['create_app']
 
@@ -19,7 +19,7 @@ def create_app(config=None, instance_path=None, **kwargs):
 
     app = Flask(__name__, **kwargs)
     _configure_app(app, config)
-    _configure_hook(app)
+    _configure_hooks(app)
     _configure_blueprints(app)
     _configure_extensions(app)
     _configure_logging(app)
@@ -47,7 +47,7 @@ def _configure_app(app, config=None):
         app.config.from_object(config)
 
 
-def _configure_hook(app):
+def _configure_hooks(app):
     """configure hooks"""
     pass
 
@@ -60,14 +60,7 @@ def _configure_blueprints(app):
 
 def _configure_extensions(app):
     """configure extensions"""
-
-    if app.config['DEBUG']:
-        from flask.ext.debugtoolbar import DebugToolbarExtension
-        DebugToolbarExtension(app)
-
-    heroku.init_app(app)
-    db.init_app(app)
-    migrate.init_app(app, db)
+    init_app(app)
 
 
 def _configure_logging(app):
@@ -78,6 +71,7 @@ def _configure_logging(app):
 def _configure_template_filters(app):
     """configure template filters"""
     pass
+
 
 def _configure_error_handlers(app):
     """configure error handlers"""
