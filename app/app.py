@@ -7,8 +7,8 @@ from flask import Flask
 
 from .config import BaseConfig, MODES
 from .utils import INSTANCE_FOLDER_PATH
-from .blueprints import register_blueprint
-from .extensions import init_app
+from .blueprints import register_blueprints
+from .extensions import init_apps
 
 __all__ = ['create_app']
 
@@ -55,12 +55,12 @@ def _configure_hooks(app):
 
 def _configure_blueprints(app):
     """configure blueprints"""
-    register_blueprint(app)
+    register_blueprints(app)
 
 
 def _configure_extensions(app):
     """configure extensions"""
-    init_app(app)
+    init_apps(app)
 
 
 def _configure_logging(app):
