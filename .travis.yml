@@ -8,12 +8,14 @@ env:
 - DATABASE_URL=mysql://travis@127.0.0.1:3306/flask-boilerplate_test
 install: pip install -r requirements/dev.txt
 script:
-- make test
+- make test-clean
+- make test-unit
+- coverage xml --omit=tests/*,migrations/* -o coverage-unit.xml
+- make test-intg
 
 after_success:
-  - make report-coverage
   - pip install --quiet python-coveralls
-  - coveralls
+  - coveralls -d coverage-unit.xml
   - make check-style
 
 notifications:

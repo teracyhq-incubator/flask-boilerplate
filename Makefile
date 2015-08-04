@@ -17,7 +17,7 @@ test-intg:
 test: | test-clean test-unit test-intg
 
 report-coverage:
-	coverage report --omit=tests/*
+	coverage report --omit=tests/*,migrations/*
 
 .DEFAULT_GOAL := resolve
 
