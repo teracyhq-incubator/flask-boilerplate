@@ -32,7 +32,7 @@ class DevConfig(BaseConfig):
     DEBUG = True
     SQLALCHEMY_ECHO = True
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL',
-                                        'mysql://root:teracy@localhost:3306/flask_boilerplate')
+                                        'mysql://root:teracy@localhost:3306/flask-boilerplate')
     # EMAIL SETTINGS, just for real email functioning
     # MAIL_SERVER = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
     # MAIL_PORT = os.getenv('MAIL_PORT', 465)
@@ -46,7 +46,7 @@ class TestConfig(DevConfig):
 
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL',
-                                        'mysql://root:teracy@localhost:3306/flask_boilerplate_test')
+                                        'mysql://root:teracy@localhost:3306/flask-boilerplate_test')
     TESTING = True
 
 

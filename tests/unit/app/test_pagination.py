@@ -131,7 +131,8 @@ class OffsetPaginationTestCase(UnitTestCase):
 
         self.assertTrue(offset_pagination.has_next)
 
-    def test_prev_url(self):
+    def test_prev_url_none(self):
+        self.mock_current_app.config.get.return_value = 25
 
         from app.pagination import OffsetPagination
         mock_query = MagicMock()
@@ -140,15 +141,28 @@ class OffsetPaginationTestCase(UnitTestCase):
 
         self.assertIsNone(offset_pagination.prev_url)
 
-        with patch.object(OffsetPagination, 'page_url', return_value='http://') as mock_page_url:
-            offset_pagination = OffsetPagination(mock_query, offset=6, limit=5)
-            self.assertEqual(offset_pagination.prev_url, 'http://')
-        mock_page_url.assert_called_once_with(1, 5)
+    def test_prev_url_exists(self):
+        self.mock_current_app.config.get.return_value = 25
 
-    def test_next_url(self):
         from app.pagination import OffsetPagination
         mock_query = MagicMock()
+
+        offset_pagination = OffsetPagination(mock_query, offset=6, limit=5)
+        self.assertEqual(offset_pagination.offset, 6)
+        self.assertEqual(offset_pagination.limit, 5)
+        self.assertTrue(offset_pagination.has_prev)
+
+        with patch.object(OffsetPagination, 'page_url', return_value='http://') as mock_page_url:
+            offset_pagination = OffsetPagination(mock_query, offset=6, limit=5)
+            self.assertTrue(offset_pagination.has_prev)
+            self.assertEqual(offset_pagination.prev_url, 'http://')
+            mock_page_url.assert_called_once_with(1, 5)
+
+    def test_next_url_none(self):
         self.mock_current_app.config.get.return_value = 25
+
+        from app.pagination import OffsetPagination
+        mock_query = MagicMock()
         mock_query.offset.return_value.limit.return_value.count.return_value = 15
 
         offset_pagination = OffsetPagination(mock_query, offset=10, limit=5)
@@ -157,8 +171,9 @@ class OffsetPaginationTestCase(UnitTestCase):
 
         with patch.object(OffsetPagination, 'page_url', return_value='http://') as mock_page_url:
             offset_pagination = OffsetPagination(mock_query, offset=6, limit=5)
+            self.assertTrue(offset_pagination.has_next)
             self.assertEqual(offset_pagination.next_url, 'http://')
-        mock_page_url.assert_called_once_with(11, 5)
+            mock_page_url.assert_called_once_with(11, 5)
 
     @patch('app.pagination.url_for')
     @patch('app.pagination.request')
