@@ -4,6 +4,7 @@ from flask import current_app, request, url_for
 
 from .utils import merge_dict
 
+
 # TODO(hoatle): implement this
 class CursorPagination(object):
     """cursor-based pagination,
