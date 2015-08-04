@@ -9,6 +9,8 @@ from .config import BaseConfig, MODES
 from .utils import INSTANCE_FOLDER_PATH
 from .blueprints import register_blueprints
 from .extensions import init_apps
+from .errors import register_error_handlers
+
 
 __all__ = ['create_app']
 
@@ -32,19 +34,20 @@ def create_app(config=None, instance_path=None, **kwargs):
 def _configure_app(app, config=None):
     """configure app with config"""
 
-    if config and type(config) == str and MODES.get(config, None) is not None:
+    if config and isinstance(config, str) and MODES.get(config, None) is not None:
         config = MODES.get(config)
 
-    if config and type(config) == str and os.path.isfile(config):
+    if config and isinstance(config, str) and os.path.isfile(config):
         app.config.from_pyfile(config)
 
-    elif config and type(config) == str and os.path.isfile(os.path.join(app.instance_path, config)):
+    elif config and isinstance(config, str) and os.path.isfile(os.path.join(app.instance_path,
+                                                                            config)):
         # try to load from instance_folder_path
         app.config.from_pyfile(os.path.join(app.instance_path, config))
-    elif config and type(config) == str:
+    elif config and isinstance(config, str):
         raise IOError('{}, {}: not found'.format(config, os.path.join(app.instance_path, config)))
 
-    if config and type(config) != str and issubclass(config, BaseConfig):
+    if config and not isinstance(config, str) and issubclass(config, BaseConfig):
         app.config.from_object(config)
 
 
@@ -75,4 +78,4 @@ def _configure_template_filters(app):
 
 def _configure_error_handlers(app):
     """configure error handlers"""
-    pass
+    register_error_handlers(app)

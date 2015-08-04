@@ -2,4 +2,10 @@
 
 """main blueprint"""
 
-from .views import module
+from flask import Blueprint
+
+__all__ = ['main_bp']
+
+main_bp = Blueprint('main', __name__)
+
+from . import views

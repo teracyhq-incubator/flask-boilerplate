@@ -4,6 +4,10 @@
         <title>Hello World</title>
     </head>
     <body>
+        {% if current_user.is_authenticated() %}
+        <h1>Hello {{current_user.email}}!</h1>
+        {% else %}
         <h1>Hello World!</h1>
+        {% endif %}
     </body>
 </html>

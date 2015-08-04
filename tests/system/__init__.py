@@ -6,6 +6,7 @@ from nose.plugins.attrib import attr
 
 from app import create_app
 
+
 @attr('sys')
 class SystemTestCase(unittest.TestCase):
 

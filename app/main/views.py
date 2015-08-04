@@ -2,15 +2,16 @@
 
 """main views"""
 
-from flask import Blueprint, render_template
+from flask import render_template
+from . import main_bp
 
 
-__all__ = ['module']
-
-module = Blueprint('main', __name__)
-
-
-@module.route('/')
+@main_bp.route('/')
 def hello_world():
     """hello world view"""
     return render_template('main/hello.html')
+
+
+@main_bp.route('/api/versions')
+def api_versions_info():
+    return render_template('main/api_versions.json')

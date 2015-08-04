@@ -1,0 +1,14 @@
+{
+  "latest": {
+    "version": "v1.0",
+    "status": "@",
+    "info": "developing version, APIs are expected to change and break things"
+  },
+  "supported":[
+    {
+      "version": "v1.0",
+      "status": "@",
+      "info": "developing version, APIs are expected to change and break things"
+    }
+  ]
+}

@@ -8,3 +8,23 @@ gunicorn
 flask-debugtoolbar
 flask-heroku
 Flask-Migrate
+Flask-Security
+Flask-Admin
+py-bcrypt
+flask-restful
+flask-restful-swagger
+flask-cors
+Flask-JWT
+PyJWT
+
+MySQL-python
+sqlalchemy-utils
+psycopg2
+
+# utilities
+inflection
+factory_boy
+fake-factory
+
+# analytics
+newrelic
