@@ -1,5 +1,5 @@
 resolve:
-	pip install -r requirements/dev.txt --upgrade
+	pip install -r requirements/dev.txt
 
 check-style:
 	flake8 --max-complexity 12 . || exit 0

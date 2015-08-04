@@ -140,9 +140,10 @@ class OffsetPaginationTestCase(UnitTestCase):
 
         self.assertIsNone(offset_pagination.prev_url)
 
-        offset_pagination = OffsetPagination(mock_query, offset=6, limit=5)
-        offset_pagination.page_url = lambda offset, limit: 'http://'
-        self.assertEqual(offset_pagination.prev_url, 'http://')
+        with patch.object(OffsetPagination, 'page_url', return_value='http://') as mock_page_url:
+            offset_pagination = OffsetPagination(mock_query, offset=6, limit=5)
+            self.assertEqual(offset_pagination.prev_url, 'http://')
+        mock_page_url.assert_called_once_with(1, 5)
 
     def test_next_url(self):
         from app.pagination import OffsetPagination
@@ -154,9 +155,10 @@ class OffsetPaginationTestCase(UnitTestCase):
 
         self.assertIsNone(offset_pagination.next_url)
 
-        offset_pagination = OffsetPagination(mock_query, offset=6, limit=5)
-        offset_pagination.page_url = lambda offset, limit: 'http://'
-        self.assertEqual(offset_pagination.next_url, 'http://')
+        with patch.object(OffsetPagination, 'page_url', return_value='http://') as mock_page_url:
+            offset_pagination = OffsetPagination(mock_query, offset=6, limit=5)
+            self.assertEqual(offset_pagination.next_url, 'http://')
+        mock_page_url.assert_called_once_with(11, 5)
 
     @patch('app.pagination.url_for')
     @patch('app.pagination.request')
