@@ -1,9 +1,9 @@
 language: python
 python:
   - "2.7"
-#  - "3.3"
-#  - "3.4"
-install: pip install -r requirements/dev.txt --upgrade
+  - "3.3"
+  - "3.4"
+install: pip install -r requirements/dev.txt
 script:
 - make test
 
