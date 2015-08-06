@@ -54,8 +54,8 @@ class RoleAPI(TokenRequiredResource):
 
     def __init__(self):
         super(RoleAPI, self).__init__()
-        self.add_argument('put', 'name', str, 'role name')
-        self.add_argument('put', 'description', str, 'role description')
+        self.add_argument('put', 'name', str, required=True, help='role name')
+        self.add_argument('put', 'description', str, required=True, help='role description')
 
     @marshal_with_data_envelope(role_fields)
     def get(self, role_id):

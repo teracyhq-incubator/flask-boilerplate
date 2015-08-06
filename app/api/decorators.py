@@ -146,7 +146,7 @@ def permissions_accepted(*permissions):
         raise UnauthorizedException(
             'Invalid Permission',
             description='required {} permission was invalid or not provided'.
-            format('or '.join([str(x) for x in perms]))
+            format(' or '.join([str(x) for x in perms]))
         )
 
     return auth_permissions_accepted(*permissions, exception_handler=exception_handler)
@@ -241,16 +241,18 @@ def one_of(*decorators):
                     if idx == (len(decorators) - 1):
                         if not isinstance(ex, ApplicationException):
                             # dirty hack of ex.error
-                            ex = ApplicationException(ex.message or getattr(ex, 'error'),
+                            ex = ApplicationException(ex.message or getattr(ex, 'error', None),
                                                       description='')
                         for e in exs:
                             if not isinstance(e, ApplicationException):
-                                e = ApplicationException(e.message or getattr(e, 'error'))
+                                e = ApplicationException(e.message or getattr(e, 'error', None) or
+                                                         getattr(e, 'name', None),
+                                                         description=getattr(e, 'data', None) or '')
                             ex.message += ' or {}'.format(e.message) \
                                 if e.message is not None else ''
                             ex.description += ' or {}'.format(e.description) \
                                 if ex.description and e.description \
-                                else '{}'.format(e.description) if e.description else ''
+                                else '{}'.format(e.description or '')
                         raise ex
                     exs.append(ex)
             return func(*args, **kwargs)

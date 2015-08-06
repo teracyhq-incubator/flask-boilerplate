@@ -142,7 +142,11 @@ class DecoratorsTestCase(UnitTestCase):
 
     @patch('app.api.decorators.auth_permissions_accepted')
     def test_permissions_accepted(self, mock_auth_permission_accepted):
-        permissions = [Mock(), Mock()]
+        perm1 = MagicMock()
+        perm1.__str__.return_value = 'perm1'
+        perm2 = MagicMock()
+        perm2.__str__.return_value = 'perm2'
+        permissions = [perm1, perm2]
 
         permissions_accepted(*permissions)
 
@@ -153,7 +157,13 @@ class DecoratorsTestCase(UnitTestCase):
                          collections.Counter(permissions))
         exception_handler = mock_auth_permission_accepted.call_args[1].get('exception_handler')
         self.assertTrue(callable(exception_handler))
-        self.assertRaises(UnauthorizedException, exception_handler, permissions)
+        with self.assertRaises(UnauthorizedException) as uae:
+            exception_handler(permissions)
+            ex = uae.exception
+            self.assertIsInstance(ex, UnauthorizedException)
+            self.assertEqual(ex.message, 'Invalid Permission')
+            self.assertEqual(ex.description,
+                             'required perm1 or perm2 permission was invalid or not provided')
 
     @patch('app.api.decorators.auth_roles_required')
     def test_roles_required(self, mock_roles_required):

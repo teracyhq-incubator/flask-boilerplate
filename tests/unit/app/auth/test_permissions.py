@@ -22,6 +22,8 @@ class PermissionsTestCase(UnitTestCase):
     def test_user_permission(self):
         from app.auth.permissions import user_permission, UserNeed
 
-        first_user_permission = user_permission(1)
+        first_user_permission = user_permission(**{'user_id': 1})
 
         self.assertEqual(first_user_permission.needs, {UserNeed(1)})
+        self.assertEqual(str(first_user_permission),
+                         "<Permission needs=set([Need(method='id', value=1)]) excludes=set([])>")

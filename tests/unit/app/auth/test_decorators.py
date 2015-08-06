@@ -104,10 +104,10 @@ class DecoratorsTestCase(UnitTestCase):
                          'test(4) should return "permission_required: 4"')
 
     def test_permissions_accepted(self):
-        mock_user_permission = Mock(spec=user_permission)
+        mock_user_permission = Mock(spec=user_permission(1))
         mock_admin_role_permission = Mock(spec=admin_role_permission)
 
-        mock_user_permission.return_value.can.return_value = False
+        mock_user_permission.can.return_value = False
         mock_admin_role_permission.can.return_value = False
 
         @permissions_accepted(mock_user_permission, mock_admin_role_permission)
@@ -116,27 +116,27 @@ class DecoratorsTestCase(UnitTestCase):
 
         self.assertRaises(PermissionDenied, test, 1)
 
-        mock_user_permission.return_value.can.return_value = True
+        mock_user_permission.can.return_value = True
 
         self.assertEqual(test(2), 'permission_accepted: 2',
                          'test(2) should return "permission_accepted: 2"')
 
-        mock_user_permission.return_value.can.return_value = False
+        mock_user_permission.can.return_value = False
         mock_admin_role_permission.can.return_value = True
 
         self.assertEqual(test(3), 'permission_accepted: 3',
                          'test(3) should return "permission_accepted: 3"')
 
-        mock_user_permission.return_value.can.return_value = True
+        mock_user_permission.can.return_value = True
 
         self.assertEqual(test(4), 'permission_accepted: 4',
                          'test(4) should return "permission_accepted: 4"')
 
     def test_permissions_accepted_http_exception(self):
-        mock_user_permission = Mock(spec=user_permission)
+        mock_user_permission = Mock(spec=user_permission(1))
         mock_admin_role_permission = Mock(spec=admin_role_permission)
 
-        mock_user_permission.return_value.can.return_value = False
+        mock_user_permission.can.return_value = False
         mock_admin_role_permission.can.return_value = False
 
         @permissions_accepted(mock_user_permission, mock_admin_role_permission, http_exception=403)
@@ -145,27 +145,27 @@ class DecoratorsTestCase(UnitTestCase):
 
         self.assertRaises(HTTPException, test, 1)
 
-        mock_user_permission.return_value.can.return_value = True
+        mock_user_permission.can.return_value = True
 
         self.assertEqual(test(2), 'permission_accepted: 2',
                          'test(2) should return "permission_accepted: 2"')
 
-        mock_user_permission.return_value.can.return_value = False
+        mock_user_permission.can.return_value = False
         mock_admin_role_permission.can.return_value = True
 
         self.assertEqual(test(3), 'permission_accepted: 3',
                          'test(3) should return "permission_accepted: 3"')
 
-        mock_user_permission.return_value.can.return_value = True
+        mock_user_permission.can.return_value = True
 
         self.assertEqual(test(4), 'permission_accepted: 4',
                          'test(4) should return "permission_accepted: 4"')
 
     def test_permissions_accepted_exception_handler(self):
-        mock_user_permission = Mock(spec=user_permission)
+        mock_user_permission = Mock(spec=user_permission(1))
         mock_admin_role_permission = Mock(spec=admin_role_permission)
 
-        mock_user_permission.return_value.can.return_value = False
+        mock_user_permission.can.return_value = False
         mock_admin_role_permission.can.return_value = False
 
         class MyException(Exception):
@@ -181,12 +181,12 @@ class DecoratorsTestCase(UnitTestCase):
 
         self.assertRaises(MyException, test, 1)
 
-        mock_user_permission.return_value.can.return_value = True
+        mock_user_permission.can.return_value = True
 
         self.assertEqual(test(2), 'permission_accepted: 2',
                          'test(2) should return "permission_accepted: 2"')
 
-        mock_user_permission.return_value.can.return_value = False
+        mock_user_permission.can.return_value = False
         mock_admin_role_permission.can.return_value = True
 
         self.assertEqual(test(3), 'permission_accepted: 3',

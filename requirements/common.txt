@@ -11,6 +11,8 @@ Flask-Migrate
 Flask-Security
 Flask-Admin
 py-bcrypt
+marshmallow
+webargs
 flask-restful
 flask-restful-swagger
 flask-cors

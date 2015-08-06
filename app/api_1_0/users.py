@@ -7,23 +7,24 @@ from flask_security import current_user
 from flask_restful import marshal_with
 from flask_restful import inputs
 
-from ..api import (permissions_accepted, one_of, anonymous_required, auth_required, validators,
-                   roles_required, BaseResource, TokenRequiredResource, token_auth_required,
+from ..api import (one_of, anonymous_required, validators,
+                   BaseResource, TokenRequiredResource, token_auth_required,
                    permissions_required, make_empty_response, marshal_with_data_envelope)
 from ..auth import user_permission, admin_role_permission
 from ..extensions import auth_datastore
+from ..exceptions import UnauthorizedException
 from ..api.decorators import paginated
 
 from . import api
-from .fields import user_fields, user_list_fields, user_token_fields
+from .fields import user_fields, user_list_fields
 
 
 @api.resource('/users', endpoint='users')
 class UserListAPI(BaseResource):
     action_decorators = {
-        'get': [token_auth_required(), roles_required('admin')],
+        'get': [permissions_required(admin_role_permission), token_auth_required()],
         # allow both anonymous users and admin to create a new user
-        'post': [one_of(anonymous_required, admin_role_permission)]
+        'post': [one_of(anonymous_required, permissions_required(admin_role_permission))]
     }
 
     def __init__(self):
@@ -42,7 +43,7 @@ class UserListAPI(BaseResource):
         args = self.parse_arguments()
         return auth_datastore.find_users(**args), args
 
-    @marshal_with_data_envelope(user_token_fields)
+    @marshal_with_data_envelope(user_fields)
     def post(self):
         """register a new user"""
         # TODO(hoatle): check the flow to have activation step
@@ -57,8 +58,6 @@ class UserListAPI(BaseResource):
 class UserAPI(TokenRequiredResource):
 
     action_decorators = {
-        'get': [permissions_accepted(user_permission, admin_role_permission)],
-        'put': [permissions_accepted(user_permission, admin_role_permission)],
         'delete': [permissions_required(admin_role_permission)]
     }
 
@@ -66,19 +65,32 @@ class UserAPI(TokenRequiredResource):
         super(UserAPI, self).__init__()
         self.add_argument('put', 'active', bool, default=True, help='active or not')
 
+
+    @staticmethod
+    def _check_current_user_or_admin_role(user_id):
+        if 'me' == user_id:
+            user_id = current_user.id
+
+        specified_user_permission = user_permission(long(user_id))
+
+        if not (specified_user_permission.can() or admin_role_permission.can()):
+            description = '{} or {} required'.format(specified_user_permission,
+                                                     admin_role_permission)
+            raise UnauthorizedException('Invalid Permission',
+                                        description=description)
+        return user_id
+
     @marshal_with_data_envelope(user_fields)
     def get(self, user_id):
         """Get a specified user"""
-        if user_id == 'me':
-            user_id = current_user.id
+        user_id = self._check_current_user_or_admin_role(user_id)
 
         return auth_datastore.read_user(user_id, **self.parse_arguments())
 
     @marshal_with_data_envelope(user_fields)
     def put(self, user_id):
         """Update a specified user"""
-        if 'me' == user_id:
-            user_id = current_user.id
+        user_id = self._check_current_user_or_admin_role(user_id)
 
         return auth_datastore.update_user(user_id, **self.parse_arguments())
 

@@ -16,14 +16,15 @@ class BaseConfig(object):
     SECURITY_PASSWORD_SALT = SECRET_KEY
     # SQLALCHEMY_COMMIT_ON_TEARDOWN = True
 
-    SQLALCHEMY_QUERY_LIMIT = 20
+    PAGINATION_LIMIT = 10
+    PAGINATION_LIMIT_MAX = 25
 
     JWT_AUTH_URL_RULE = None  # disable default JWT auth rule, use flask-restful instead
-    JWT_EXPIRATION_DELTA = timedelta(hours=2)
     JWT_ALGORITHMS = ['HS256']
-    JWT_MAX_EXPIRATION_DELTA = timedelta(days=60)
-    JWT_MIN_EXPIRES_IN = 60 * 5  # 5 mins
-    JWT_MAX_EXPIRES_IN = JWT_MAX_EXPIRATION_DELTA.total_seconds()
+    JWT_EXPIRATION_DELTA = timedelta(hours=2)
+    JWT_EXPIRATION_DELTA_MAX = timedelta(days=60)
+    JWT_EXPIRES_IN_MIN = 60 * 5  # 5 mins
+    JWT_EXPIRES_IN_MAX = JWT_EXPIRATION_DELTA_MAX.total_seconds()
 
 
 class DevConfig(BaseConfig):

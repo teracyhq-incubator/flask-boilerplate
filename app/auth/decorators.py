@@ -8,7 +8,6 @@ import inspect
 from flask import abort
 from flask_principal import PermissionDenied, Permission, RoleNeed
 
-
 def permissions_required(*permissions, **opt_kwargs):
     """Decorator which specifies that a user must have all the specified permissions.
     Example::
@@ -63,9 +62,6 @@ def permissions_accepted(*permissions, **opt_kwargs):
         @wraps(func)
         def decorated(*args, **kwargs):
             for permission in permissions:
-                if inspect.isfunction(permission):
-                    permission = permission(args, kwargs)
-
                 if permission.can():
                     return func(*args, **kwargs)
             if opt_kwargs.get('http_exception'):

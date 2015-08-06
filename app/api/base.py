@@ -68,7 +68,7 @@ def jwt_make_payload(user, expiration_delta=None, leeway=None):
     """
     if expiration_delta:
         # timedelta config supported only
-        max_expiration_delta = current_app.config['JWT_MAX_EXPIRATION_DELTA']
+        max_expiration_delta = current_app.config['JWT_EXPIRATION_DELTA_MAX']
         expiration_delta = expiration_delta if expiration_delta <= max_expiration_delta \
             else max_expiration_delta
     else:
@@ -151,7 +151,7 @@ class RequestParserResourceMixin(object):
 
     def __init__(self):
         self.req_parses = {}
-        pagination_limit = current_app.config.get('PAGINATION_LIMIT', 25)
+        pagination_limit = current_app.config.get('PAGINATION_LIMIT_MAX', 25)
         # some common get query
         self.add_argument('common', 'lang', str, help='specified language')
 
