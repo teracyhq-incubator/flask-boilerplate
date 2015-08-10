@@ -52,18 +52,21 @@ def filter_dict_recusive(origin_dict, fields_dict):
         if origin_dict.get(key) is None:
             continue
 
-        # exp: roles{id,name} then key is `roles` and value is `{id,name}`
+        # exp: roles{id,name} -> key: `roles`, value: `{id,name}`
         if type(value) is dict and len(value) > 0:
-            # exp: {roles: {id: 1, name: 'role 1', description: '...'}}
-            #  then recusive call filter_dict_recusive(origin_dict['roles'], {id:{}, name:{}})
             if type(origin_dict[key]) is dict:
                 result[key] = filter_dict_recusive(origin_dict[key], value)
             elif type(origin_dict[key]) is list:
                 result[key] = [filter_dict_recusive(k, value) for k in origin_dict[key]]
             else:
                 result[key] = origin_dict[key]
+
         else:
             result[key] = origin_dict[key]
+
+        if value.get('__slice') is not None:
+            slice_indexes = map(int, value.get('__slice').split(':'))
+            result[key] = result[key][slice(*slice_indexes)]
     return result
 
 

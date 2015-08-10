@@ -261,3 +261,51 @@ class SchemasTestCase(UnitTestCase):
         self.assertEqual(result, json.dumps(desired_obj_list))
         self.assertEqual(type(result), str)
 
+        # result have sliced on return
+
+        sample_obj_list = [{
+            'id': 1,
+            'email': 'test@example.com',
+            'active': True,
+            'roles': [{
+                'id': 1,
+                'name': 'user',
+                'description': 'user role'
+            }, {
+                'id': 2,
+                'name': 'admin',
+                'description': 'admin role'
+            }, {
+                'id': 3,
+                'name': 'admin2',
+                'description': 'admin role'
+            }, {
+                'id': 4,
+                'name': 'admin3',
+                'description': 'admin role'
+            }]
+        }, {
+            'id': 2,
+            'email': 'test2@example.com',
+            'active': False,
+        }]
+
+        desired_obj_list = [{
+            'id': 1,
+            'roles': [{
+                'id': 2,
+                'name': 'admin',
+            }, {
+                'id': 3,
+                'name': 'admin2',
+            }]
+        }, {
+            'id': 2,
+            'roles': []
+        }]
+
+        result, errors = sample_role_schema.dumps(sample_obj_list, fields='id,roles[1:3]{id,name}', many=True)
+
+        self.assertEqual(result, json.dumps(desired_obj_list))
+        self.assertEqual(type(result), str)
+
