@@ -79,7 +79,8 @@ def filter_dict(origin_dict, fields=None):
 
 
 def filter_list(origin_list, fields=None):
-    return [filter_dict(obj, fields) for obj in origin_list]
+    return  origin_list if fields is None else\
+                [filter_dict(obj, fields) for obj in origin_list]
 
 
 class Schema(SchemaOrigin):
