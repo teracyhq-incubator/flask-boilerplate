@@ -1,4 +1,5 @@
 from marshmallow import Schema as SchemaOrigin
+from marshmallow.schema import MarshalResult
 import re
 
 def fields_to_dict(fields):
@@ -44,22 +45,48 @@ def fields_to_dict(fields):
 
     return result
 
+def filter_dict_recusive(origin_dict, fields_dict):
+    result = {}
+    for key, value in fields_dict.iteritems():
+
+        if origin_dict.get(key) is None:
+            continue
+
+        # exp: roles{id,name} then key is `roles` and value is `{id,name}`
+        if type(value) is dict and len(value) > 0:
+            # exp: {roles: {id: 1, name: 'role 1', description: '...'}}
+            #  then recusive call filter_dict_recusive(origin_dict['roles'], {id:{}, name:{}})
+            if type(origin_dict[key]) is dict:
+                result[key] = filter_dict_recusive(origin_dict[key], value)
+            elif type(origin_dict[key]) is list:
+                result[key] = [filter_dict_recusive(k, value) for k in origin_dict[key]]
+            else:
+                result[key] = origin_dict[key]
+        else:
+            result[key] = origin_dict[key]
+    return result
+
 
 def filter_dict(origin_dict, fields=None):
     result = {}
     fields_dict = fields_to_dict(fields)
 
-    if len(fields_dict) == 0:
-        result = origin_dict.copy()
-    else:
-        for key, value in fields_dict.iteritems():
-            result[key] = origin_dict[key]
+    return origin_dict.copy() if len(fields_dict) == 0 else\
+            filter_dict_recusive(origin_dict, fields_dict)
 
-    return result
+
+def filter_list(origin_list, fields=None):
+    return [filter_dict(obj, fields) for obj in origin_list]
 
 
 class Schema(SchemaOrigin):
 
     def dump(self, obj, many=None, update_fields=True, fields=None, **kwargs):
-        result = super(Schema, self).dump(obj, many, update_fields, **kwargs)
-        return filter_dict(result, fields)
+        result, errors = super(Schema, self).dump(obj, many, update_fields, **kwargs)
+        data = filter_list(result, fields) if many is True else filter_dict(result, fields)
+        return MarshalResult(data, errors)
+
+    def dumps(self, obj, many=None, update_fields=True, fields=None, *args, **kwargs):
+        result, errors = self.dump(obj, many, update_fields, fields)
+        data = self.opts.json_module.dumps(result, *args, **kwargs)
+        return MarshalResult(data, errors)
