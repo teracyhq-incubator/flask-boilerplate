@@ -2,6 +2,7 @@ from marshmallow import Schema as SchemaOrigin
 from marshmallow.schema import MarshalResult
 import re
 
+
 def fields_to_dict(fields):
     """ FIXME:
         https://www.debuggex.com/r/24QPqzm5EsR0e2bt
@@ -16,7 +17,8 @@ def fields_to_dict(fields):
     look_behind_keys = re.findall('{(\w*?),', fields)
     look_behind_pattern_list = ['(?<!{' + k + ')' for k in look_behind_keys]
 
-    # FIXME: '(?<!{[^,]*),<look_forward_pattern>' will trigger "look-behind requires fixed-width pattern"
+    # FIXME: '(?<!{[^,]*),<look_forward_pattern>' will trigger "look-behind requires
+    # fixed-width pattern"
     look_behind_pattern = ''.join(look_behind_pattern_list)
 
     # FIXME: not support nested bracket: field{id,name,description{abc,def}}
@@ -45,7 +47,8 @@ def fields_to_dict(fields):
 
     return result
 
-def filter_dict_recusive(origin_dict, fields_dict):
+
+def filter_dict_recursive(origin_dict, fields_dict):
     result = {}
     for key, value in fields_dict.iteritems():
 
@@ -55,9 +58,9 @@ def filter_dict_recusive(origin_dict, fields_dict):
         # exp: roles{id,name} -> key: `roles`, value: `{id,name}`
         if type(value) is dict and len(value) > 0:
             if type(origin_dict[key]) is dict:
-                result[key] = filter_dict_recusive(origin_dict[key], value)
+                result[key] = filter_dict_recursive(origin_dict[key], value)
             elif type(origin_dict[key]) is list:
-                result[key] = [filter_dict_recusive(k, value) for k in origin_dict[key]]
+                result[key] = [filter_dict_recursive(k, value) for k in origin_dict[key]]
             else:
                 result[key] = origin_dict[key]
 
@@ -71,20 +74,18 @@ def filter_dict_recusive(origin_dict, fields_dict):
 
 
 def filter_dict(origin_dict, fields=None):
-    result = {}
     fields_dict = fields_to_dict(fields)
 
-    return origin_dict.copy() if len(fields_dict) == 0 else\
-            filter_dict_recusive(origin_dict, fields_dict)
+    return origin_dict.copy() if len(fields_dict) == 0 else \
+        filter_dict_recursive(origin_dict, fields_dict)
 
 
 def filter_list(origin_list, fields=None):
-    return  origin_list if fields is None else\
-                [filter_dict(obj, fields) for obj in origin_list]
+    return origin_list if fields is None else \
+        [filter_dict(obj, fields) for obj in origin_list]
 
 
 class Schema(SchemaOrigin):
-
     def dump(self, obj, many=None, update_fields=True, fields=None, **kwargs):
         result, errors = super(Schema, self).dump(obj, many, update_fields, **kwargs)
         data = filter_list(result, fields) if many is True else filter_dict(result, fields)

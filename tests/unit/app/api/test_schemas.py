@@ -14,8 +14,8 @@ class SchemasTestCase(UnitTestCase):
         self.assertEqual({}, fields_to_dict(None))
         self.assertEqual({}, fields_to_dict(''))
 
-        fields = 'id,name'
-        result = fields_to_dict(fields)
+        _fields = 'id,name'
+        result = fields_to_dict(_fields)
 
         expected = {
             'id': {},
@@ -24,7 +24,7 @@ class SchemasTestCase(UnitTestCase):
 
         self.assertEqual(result, expected)
 
-        fields = 'id,name,roles{id,name,description}'
+        _fields = 'id,name,roles{id,name,description}'
         expected = {
             'id': {},
             'name': {},
@@ -35,11 +35,11 @@ class SchemasTestCase(UnitTestCase):
             }
         }
 
-        result = fields_to_dict(fields)
+        result = fields_to_dict(_fields)
 
         self.assertEqual(result, expected)
 
-        fields = 'id,name,roles[0:5]{id,name,description}'
+        _fields = 'id,name,roles[0:5]{id,name,description}'
 
         expected = {
             'id': {},
@@ -52,7 +52,7 @@ class SchemasTestCase(UnitTestCase):
             }
         }
 
-        self.assertEqual(fields_to_dict(fields), expected)
+        self.assertEqual(fields_to_dict(_fields), expected)
 
     def test_filter_dict(self):
 
@@ -177,7 +177,6 @@ class SchemasTestCase(UnitTestCase):
         self.assertEqual(type(result), type(sample_obj_list))
         self.assertEqual(len(result[0]), 1)
         self.assertEqual(result[0].get('id'), sample_obj_list[0].get('id'))
-
 
     def test_dumps(self):
         import json
@@ -304,8 +303,8 @@ class SchemasTestCase(UnitTestCase):
             'roles': []
         }]
 
-        result, errors = sample_role_schema.dumps(sample_obj_list, fields='id,roles[1:3]{id,name}', many=True)
+        result, errors = sample_role_schema.dumps(sample_obj_list, fields='id,roles[1:3]{id,name}',
+                                                  many=True)
 
         self.assertEqual(result, json.dumps(desired_obj_list))
         self.assertEqual(type(result), str)
-
