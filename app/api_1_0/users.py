@@ -35,7 +35,6 @@ class UserListAPI(BaseResource):
 
         self.add_argument('post', 'email', validators.Email(), required=True)
         self.add_argument('post', 'password', validators.password, required=True)
-        self.add_argument('post', 'active', inputs.boolean)
 
     @marshal_with(user_list_fields)
     @paginated

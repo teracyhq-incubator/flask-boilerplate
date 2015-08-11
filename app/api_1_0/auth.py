@@ -23,7 +23,7 @@ def before_request():
     # TODO(hoatle): session usage should be removed from REST
 
 
-@api.resource('/token')
+@api.resource('/token', endpoint='token')
 class TokenAPI(BaseResource):
     """Serve requests for the authentication token."""
 

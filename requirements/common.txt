@@ -13,11 +13,11 @@ Flask-Admin
 py-bcrypt
 marshmallow
 webargs
+git+https://github.com/teracyhq/flask-classy.git@v0.6.11#egg=flask-classy
 flask-restful
-flask-restful-swagger
 flask-cors
-Flask-JWT
 PyJWT
+Flask-JWT
 
 MySQL-python
 sqlalchemy-utils
