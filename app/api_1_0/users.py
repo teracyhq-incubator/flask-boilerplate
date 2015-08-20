@@ -1,70 +1,27 @@
-# -*- coding: utf-8 -*-
-
-"""Users API"""
-
 from flask import url_for
 from flask_security import current_user
-from flask_restful import marshal_with
-from flask_restful import inputs
+from flask_classy import route
+from webargs import Arg
+from webargs.flaskparser import use_args
 
-from ..api import (one_of, anonymous_required, validators,
-                   BaseResource, TokenRequiredResource, token_auth_required,
-                   permissions_required, make_empty_response, marshal_with_data_envelope)
-from ..auth import user_permission, admin_role_permission
+from ..auth import admin_role_permission, user_permission
+from ..api import (Resource, marshal_with, marshal_with_data_envelope, token_auth_required, one_of,
+                   anonymous_required, permissions_required, validators, paginated)
 from ..extensions import auth_datastore
 from ..exceptions import UnauthorizedException
-from ..api.decorators import paginated
 
-from . import api
-from .fields import user_fields, user_list_fields
+from .schemas import UserSchema, UserListSchema
+from .args import user_args
 
+_user_schema = UserSchema()
 
-@api.resource('/users', endpoint='users')
-class UserListAPI(BaseResource):
-    action_decorators = {
-        'get': [permissions_required(admin_role_permission), token_auth_required()],
-        # allow both anonymous users and admin to create a new user
-        'post': [one_of(anonymous_required, permissions_required(admin_role_permission))]
-    }
-
-    def __init__(self):
-        super(UserListAPI, self).__init__()
-
-        self.add_argument('get', 'email', validators.Email())
-        self.add_argument('get', 'active', inputs.boolean)
-
-        self.add_argument('post', 'email', validators.Email(), required=True)
-        self.add_argument('post', 'password', validators.password, required=True)
-        self.add_argument('post', 'active', inputs.boolean)
-
-    @marshal_with(user_list_fields)
-    @paginated
-    def get(self):
-        args = self.parse_arguments()
-        return auth_datastore.find_users(**args), args
-
-    @marshal_with_data_envelope(user_fields)
-    def post(self):
-        """register a new user"""
-        # TODO(hoatle): check the flow to have activation step
-        user = auth_datastore.create_user(**self.parse_arguments())
-        location = url_for('.user', _external=True, **{'user_id': user.id})
-        return user, 201, {
-            'Location': location
-        }
+search_args = {
+    'email': Arg(str, validate=validators.Email()),
+    'active': Arg(bool)  # TODO(hoatle): add boolean validator here
+}
 
 
-@api.resource('/users/<user_id>', endpoint='user')
-class UserAPI(TokenRequiredResource):
-
-    action_decorators = {
-        'delete': [permissions_required(admin_role_permission)]
-    }
-
-    def __init__(self):
-        super(UserAPI, self).__init__()
-        self.add_argument('put', 'active', bool, default=True, help='active or not')
-
+class UserResource(Resource):
 
     @staticmethod
     def _check_current_user_or_admin_role(user_id):
@@ -80,21 +37,45 @@ class UserAPI(TokenRequiredResource):
                                         description=description)
         return user_id
 
-    @marshal_with_data_envelope(user_fields)
-    def get(self, user_id):
-        """Get a specified user"""
-        user_id = self._check_current_user_or_admin_role(user_id)
+    @route('', methods=['GET'])
+    @token_auth_required()
+    @permissions_required(admin_role_permission)
+    @marshal_with(UserListSchema())
+    @paginated
+    @use_args(search_args)
+    def index(self, args):
+        return auth_datastore.find_users(**args), args
 
-        return auth_datastore.read_user(user_id, **self.parse_arguments())
 
-    @marshal_with_data_envelope(user_fields)
-    def put(self, user_id):
-        """Update a specified user"""
-        user_id = self._check_current_user_or_admin_role(user_id)
+    @token_auth_required()
+    @marshal_with_data_envelope(_user_schema)
+    def show(self, id):
+        id = self._check_current_user_or_admin_role(id)
+        user = auth_datastore.read_user(id)
+        return user
 
-        return auth_datastore.update_user(user_id, **self.parse_arguments())
+    @route('', methods=['POST'])
+    @one_of(anonymous_required, permissions_required(admin_role_permission))
+    @marshal_with_data_envelope(_user_schema)
+    @use_args(user_args)
+    def create(self, args):
+        user = auth_datastore.create_user(**args)
+        location = url_for('.users:show', _external=True, **{'id': user.id})
+        return user, 201, {
+            'Location': location
+        }
 
-    def delete(self, user_id):
-        """Delete a specified user"""
-        auth_datastore.delete_user(user_id, **self.parse_arguments())
-        return make_empty_response(200)
+    @route('<id>', methods=['PUT'])
+    @marshal_with_data_envelope(_user_schema)
+    @use_args({
+        'email': Arg(str, validate=validators.Email()),
+        'active': Arg(bool)
+    })
+    def update(self, args, id):
+        id = self._check_current_user_or_admin_role(id)
+        return auth_datastore.update_user(id, **args)
+
+    @permissions_required(admin_role_permission)
+    def destroy(self, id):
+        auth_datastore.delete_user(id)
+        return ''

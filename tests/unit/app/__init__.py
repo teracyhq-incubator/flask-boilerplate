@@ -26,15 +26,15 @@ class CurrentAppMockMixin(object):
         self.base_mock_current_app = self.base_current_app_patcher.start()
         self.base_mock_current_app.config = app_config
 
-        self.auth_current_app_patcher = patch('app.api_1_0.auth.current_app')
-        self.auth_mock_current_app = self.auth_current_app_patcher.start()
-        self.auth_mock_current_app.config = app_config
+        self.token_current_app_patcher = patch('app.api_1_0.token.current_app')
+        self.token_mock_current_app = self.token_current_app_patcher.start()
+        self.token_mock_current_app.config = app_config
 
     def tearDown(self):
         del self.base_mock_current_app
         self.base_current_app_patcher.stop()
         del self.base_current_app_patcher
 
-        del self.auth_mock_current_app
-        self.auth_current_app_patcher.stop()
-        del self.auth_current_app_patcher
+        del self.token_mock_current_app
+        self.token_current_app_patcher.stop()
+        del self.token_current_app_patcher
