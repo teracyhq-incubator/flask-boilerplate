@@ -7,18 +7,18 @@ from webargs import Arg
 from webargs.flaskparser import parser
 
 from .. import utils
-from ..api import (one_of, token_auth_required, http_auth_required, jwt_make_payload,
+from ..api import (Resource, one_of, token_auth_required, http_auth_required, jwt_make_payload,
                    jwt_encode_payload, jwt_authenticate)
 from ..api.validators import NumberRange, Email, password
 from ..exceptions import BadRequestException
-from .base import Resource
 
 _user_args = {
     'username': Arg(str, validate=Email, required=True),
     'password': Arg(str, validate=password, required=True)
 }
 
-class TokenAPI(Resource):
+
+class TokenResource(Resource):
     route_base = 'token'
 
     @staticmethod

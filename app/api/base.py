@@ -2,36 +2,23 @@
 
 """base api"""
 
-from functools import partial
+from functools import partial, wraps
 import re
 from datetime import datetime, timedelta
 
-from flask import current_app, request, make_response
+import inflection
+import jwt as jwt_lib
+from werkzeug.security import safe_str_cmp
+from flask import current_app,  make_response
 from flask_security import utils, AnonymousUser
 from flask_security.utils import md5
-from flask_restful import Resource, marshal_with
-from flask_restful.inputs import boolean
-from flask_restful.reqparse import RequestParser
-from werkzeug.security import safe_str_cmp
-import jwt as jwt_lib
+from flask_classy import FlaskView
 
 from ..extensions import jwt, auth_datastore
-from ..utils import extract_dict
 from ..exceptions import ApplicationException
-from . import roles_required, token_auth_required
-from .validators import NumberRange
 from .errors import api_exception_handler
-
-
-def _add_if_not_none(adding_dict, key, val):
-    """add existing key, val to a dict if the val is not None"""
-    if val is not None:
-        adding_dict[key] = val
-
-
-def marshal_with_data_envelope(fields):
-    """marshal with `data` envelope"""
-    return marshal_with(fields, envelope='data')
+from .decorators import token_auth_required, roles_required
+from .representations.json import output_json
 
 
 @jwt.authentication_handler
@@ -145,113 +132,92 @@ SA_OPS_MAPPER = {
 FILTER_KEY_REGEX = re.compile(r'^(?P<key>\w*[a-zA-Z0-9])+__(?P<op>%s)$' % '|'.join(SUPPORTED_OPS))
 
 
-class RequestParserResourceMixin(object):
-    """The mixin for request parser handling
-    """
+class Resource(FlaskView):
+    """The base Resource class that other REST resources should extend from"""
+    trailing_slash = False
+    representations = {'application/json': output_json}
 
-    def __init__(self):
-        self.req_parses = {}
-        pagination_limit = current_app.config.get('PAGINATION_LIMIT_MAX', 25)
-        # some common get query
-        self.add_argument('common', 'lang', str, help='specified language')
+    special_methods = {
+        'get': ['GET'],
+        'put': ['PUT'],
+        'patch': ['PATCH'],
+        'post': ['POST'],
+        'delete': ['DELETE'],
+        'index': ['GET'],
+        'create': ['POST'],
+        'show': ['GET'],
+        'update': ['PUT'],
+        'destroy': ['DELETE']
+    }
 
-        self.add_argument('get', 'q', str, help='query string')
-        self.add_argument('get', 'offset', NumberRange(min=0), default=0, help='offset pagination')
-        self.add_argument('get', 'limit', NumberRange(min=1, max=pagination_limit),
-                          default=pagination_limit, help='limit pagination')
-        self.add_argument('get', 'sort', str, help='sorting')
-        self.add_argument('get', 'one', boolean, help='expect only one result')
+    @classmethod
+    def get_route_base(cls):
+        if cls.route_base is None:
+            base_name = None
+            if cls.__name__.endswith('API'):
+                base_name = cls.__name__[:-3]
+            elif cls.__name__.endswith('Resource'):
+                base_name = cls.__name__[:-8]
 
-        self.add_argument('post', '_method', str,
-                          help='POST method with a client having limited http method support')
+            if base_name is not None:
+                return inflection.dasherize(inflection.pluralize(inflection.underscore(base_name)))
 
-    def add_argument(self, method, name, a_type, required=False, location=None,
-                     default=None, help=None, **kwargs):
-        """Add argument for request parser"""
-        kwargs['name'] = name
-        kwargs['type'] = a_type
-        kwargs['required'] = required
-        _add_if_not_none(kwargs, 'location', location)
-        _add_if_not_none(kwargs, 'default', default)
-        _add_if_not_none(kwargs, 'help', help)
-
-        if self.req_parses.get(method) is None:
-            self.req_parses[method] = RequestParser(trim=True)
-
-        self.req_parses[method].add_argument(**kwargs)
-
-    def parse_arguments(self, method=None, ignored_values=(None, ''), **kwargs):
-        """Parse the request for arguments"""
-        filters = []
-        common_args = self.req_parses['common'].parse_args(**kwargs)
-        common_args = extract_dict(common_args, ignored_values=ignored_values)
-        method = method or request.method.lower()
-
-        if self.req_parses.get(method) is None:
-            return common_args
-        args = self.req_parses[method].parse_args(**kwargs)
-
-        # it's assumed that 'common' will not include any filter query
-        # parse filters ?field__op=value => convert to [{key: field, op: op, value:value}, ]
-        filter_dict = extract_dict(args, func=lambda k, v: FILTER_KEY_REGEX.match(k))
-
-        for key, value in filter_dict.iteritems():
-            matcher = FILTER_KEY_REGEX.match(key)
-            key = matcher.group('key')
-            operator = matcher.group('op')
-
-            if operator == 'in' or operator == 'ni':
-                value = value.split(',')
-
-            filters.append({
-                'key': key,
-                'op': SA_OPS_MAPPER.get(operator),
-                'value': value
-            })
-
-        args = extract_dict(args, func=lambda k, v: not FILTER_KEY_REGEX.match(k))
-
-        if len(filters) > 0:
-            args['filters'] = filters
-
-        common_args.update(extract_dict(args, ignored_values=ignored_values))
-        return common_args
+        return super(Resource, cls).get_route_base()
 
 
-# Thanks to: https://gist.github.com/ratchit/3942066
-class BaseResource(RequestParserResourceMixin, Resource):
-    """The base resource
-    """
-    action_decorators = {}
+    @classmethod
+    def build_route_name(cls, method_name):
 
-    def dispatch_request(self, *args, **kwargs):
-        """Derived Resource dispatch to allow for decorators to be
-            applied to specific individual request methods - in addition
-            to the standard decorator assignment.
+        if cls.__name__.endswith('API') or cls.__name__.endswith('Resource'):
+            if cls.route_base is None:
+                return cls.get_route_base() + ':%s' % method_name
+            else:
+                return cls.route_base + ':%s' % method_name
 
-            Example decorator use:
-            decorators = [user_required] # applies to all methods, the same with `method_decorators`
-            action_decorators = {
-                'post': [admin_required, format_results]
-            }
-        """
-
-        view = super(BaseResource, self).dispatch_request
-        decorators = self.action_decorators.get(request.method.lower())
-        if decorators:
-            for decorator in decorators:
-                view = decorator(view)
-
-        return view(*args, **kwargs)
+        return super(Resource, cls).build_route_name(method_name)
 
 
-class TokenRequiredResource(BaseResource):
+def marshal(data, schema=None, envelope=None):
+    """Marshal data with marshmallow"""
+    if schema:
+        result = schema.dump(data)  # TODO(hoatle): handle error?
+        data = result.data
+
+    if envelope:
+        return {envelope: data}
+    else:
+        return data
+
+
+def marshal_with(schema=None, envelope=None):
+    """decorator for marshalling with marshmallow"""
+    def wrapper(func):
+        @wraps(func)
+        def decorated(*args, **kwargs):
+            resp = func(*args, **kwargs)
+            if isinstance(resp, tuple):
+                data, code, headers = resp
+                return marshal(data, schema, envelope), code, headers
+            else:
+                return marshal(resp, schema, envelope)
+
+        return decorated
+
+    return wrapper
+
+
+def marshal_with_data_envelope(schema):
+    """marshal with `data` envelope"""
+    return marshal_with(schema, envelope='data')
+
+
+class TokenRequiredResource(Resource):
     """The base resource class that requires token authentication"""
 
     decorators = [token_auth_required()]
 
 
-class AdminRoleRequiredResource(BaseResource):
+class AdminRoleRequiredResource(Resource):
     """The base resource class that requires admin role"""
 
     decorators = [roles_required('admin'), token_auth_required()]

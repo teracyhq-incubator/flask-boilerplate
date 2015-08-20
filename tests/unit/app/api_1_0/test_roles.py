@@ -5,28 +5,19 @@
 from tests.unit import UnitTestCase
 
 
-class RoleListAPITestCase(UnitTestCase):
+class RoleResourceTestCase(UnitTestCase):
 
-    def test_init(self):
+    def test_index(self):
         pass
 
-    def test_get(self):
+    def test_create(self):
         pass
 
-    def test_post(self):
+    def test_show(self):
         pass
 
-
-class RoleAPITestCase(UnitTestCase):
-
-    def test_init(self):
+    def test_update(self):
         pass
 
-    def test_get(self):
-        pass
-
-    def test_put(self):
-        pass
-
-    def test_delete(self):
+    def test_destroy(self):
         pass
