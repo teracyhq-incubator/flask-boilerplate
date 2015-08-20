@@ -44,7 +44,7 @@ class TokenAPI(BaseResource):
 
     def __init__(self):
         super(TokenAPI, self).__init__()
-        self.add_argument('post', 'email', Email(), required=True, help='user email')
+        self.add_argument('post', 'username', Email(), required=True, help='user email')
         self.add_argument('post', 'password', password, required=True, help='user password')
 
         min_expires_in = current_app.config.get('JWT_MIN_EXPIRES_IN')
@@ -67,11 +67,11 @@ class TokenAPI(BaseResource):
         """Login and return JWT token
         """
         args = self.parse_arguments()
-        user = jwt_authenticate(args.get('email'), args.get('password'))
+        user = jwt_authenticate(args.get('username'), args.get('password'))
         if user:
             return self._token_result(user, args.get('expires_in'))
 
         raise BadRequestException(
             'Invalid Credentials',
-            description='email or password is not correct'
+            description='username or password is not correct'
         )

@@ -1,6 +1,6 @@
 from flask import url_for
 from flask_security import current_user
-from flask_classy import route
+from flask_classy import route, FlaskView
 from webargs import Arg
 from webargs.flaskparser import use_args
 

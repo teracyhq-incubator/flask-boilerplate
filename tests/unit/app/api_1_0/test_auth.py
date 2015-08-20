@@ -67,7 +67,7 @@ class TokenAPITestCase(CurrentAppMockMixin, UnitTestCase):
 
         token_api = TokenAPI()
         args = {
-            'email': 'test@example.com',
+            'username': 'test@example.com',
             'password': 'pass',
             'expires_in': None
         }
@@ -82,9 +82,9 @@ class TokenAPITestCase(CurrentAppMockMixin, UnitTestCase):
 
         self.assertIsInstance(ex, BadRequestException)
         self.assertEqual(ex.message, 'Invalid Credentials')
-        self.assertEqual(ex.description, 'email or password is not correct')
+        self.assertEqual(ex.description, 'username or password is not correct')
 
-        mock_jwt_authenticate.assert_called_once_with(args.get('email'), args.get('password'))
+        mock_jwt_authenticate.assert_called_once_with(args.get('username'), args.get('password'))
 
     @patch('app.api_1_0.auth.jwt_encode_payload')
     @patch('app.api_1_0.auth.jwt_make_payload')
@@ -106,7 +106,7 @@ class TokenAPITestCase(CurrentAppMockMixin, UnitTestCase):
 
         token_api = TokenAPI()
         args = {
-            'email': 'test@example.com',
+            'username': 'test@example.com',
             'password': 'pass',
             'expires_in': None
         }
@@ -119,6 +119,6 @@ class TokenAPITestCase(CurrentAppMockMixin, UnitTestCase):
 
         self.assertEqual(result.get('token'), '123456789')
         self.assertEqual(result.get('expires_in'), delta.total_seconds())
-        mock_jwt_authenticate.assert_called_once_with(args.get('email'), args.get('password'))
+        mock_jwt_authenticate.assert_called_once_with(args.get('username'), args.get('password'))
         mock_jwt_make_payload.assert_called_once_with(mock_user, expiration_delta=None)
         mock_jwt_encode_payload.assert_called_once_with(payload)

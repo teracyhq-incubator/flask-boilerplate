@@ -1,4 +1,3 @@
-import json
 import math
 from datetime import timedelta
 
@@ -10,11 +9,14 @@ from webargs.flaskparser import parser
 from .. import utils
 from ..api import (one_of, token_auth_required, http_auth_required, jwt_make_payload,
                    jwt_encode_payload, jwt_authenticate)
-from ..api.validators import NumberRange
+from ..api.validators import NumberRange, Email, password
 from ..exceptions import BadRequestException
 from .base import Resource
-from .args import user_args
 
+_user_args = {
+    'username': Arg(str, validate=Email, required=True),
+    'password': Arg(str, validate=password, required=True)
+}
 
 class TokenAPI(Resource):
     route_base = 'token'
@@ -55,13 +57,13 @@ class TokenAPI(Resource):
     def create(self):
         """Login and return JWT token
         """
-        args = parser.parse(utils.merge_dict(user_args, self.common_args))
-        user = jwt_authenticate(args.get('email'), args.get('password'))
+        args = parser.parse(utils.merge_dict(_user_args, self.common_args))
+        user = jwt_authenticate(args.get('username'), args.get('password'))
         if user:
             # TODO(hoatle): support to make response from dict
             return self._token_result(user, args.get('expires_in'))
 
         raise BadRequestException(
             'Invalid Credentials',
-            description='email or password is not correct'
+            description='username or password is not correct'
         )
