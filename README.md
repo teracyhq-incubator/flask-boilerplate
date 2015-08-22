@@ -46,12 +46,51 @@ See `flask-boilerplate/app/config.py`
 Usage
 -----
 
+**Run**
+
 ```
 $ python manage.py db setup
 $ python manage.py runserver -h 0.0.0.0
 ```
 
 Then open: http://localhost:5000/ to see how the app works.
+
+**Test**
+
+
+```
+$ make test-unit
+```
+
+to run unit tests
+
+or:
+
+```
+$ make test-intg
+```
+
+to run integration tests
+ 
+or:
+
+```
+$ make test
+```
+
+to run both unit and integration tests
+
+
+after that, `$ make report-coverage` to see coverage report.
+
+
+**Style**
+
+```
+$ make check-style
+```
+
+to check pep8, pylint styles.
 
 
 Contributing
