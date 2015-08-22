@@ -19,16 +19,39 @@ Heroku deployment: https://flbp.herokuapp.com/
 [![Build Status](https://travis-ci.org/teracyhq/flask-boilerplate.svg?branch=master)](https://travis-ci.org/teracyhq/flask-boilerplate)
 [![Coverage Status](https://coveralls.io/repos/teracyhq/flask-boilerplate/badge.png?branch=master)](https://coveralls.io/r/teracyhq/flask-boilerplate?branch=master)
 
-Usage
------
-
 
 Installation
 ------------
 
+Use `teracy-dev`: http://dev.teracy.org/docs/getting_started.html
+
+Then:
+
+```
+$ ws
+$ cd personal
+$ git clone git@github.com:teracyhq/flask-boilerplate.git
+$ cd flask-boilerplate
+$ mkvirtualenv flask-boilerplate
+$ make resolve
+```
+
 
 Configuration
 -------------
+
+See `flask-boilerplate/app/config.py`
+
+
+Usage
+-----
+
+```
+$ python manage.py db setup
+$ python manage.py runserver -h 0.0.0.0
+```
+
+Then open: http://localhost:5000/ to see how the app works.
 
 
 Contributing
