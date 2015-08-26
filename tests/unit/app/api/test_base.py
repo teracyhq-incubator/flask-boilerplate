@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """app.api.base tests"""
-from mock import patch, MagicMock
+from mock import patch
 from flask import make_response
-from flask_restful import Resource
 
 from tests.unit import UnitTestCase
 from tests.unit.app import CurrentAppMockMixin
@@ -189,9 +188,9 @@ class BaseTestCase(CurrentAppMockMixin, UnitTestCase):
         for op in supported_ops:
             self.assertTrue(op in SUPPORTED_OPS, '{} should be in SUPPORTED_OPS'.format(op))
 
-    def test_filter_key_regex(self):
+    def test_filter_key_re(self):
 
-        from app.api.base import FILTER_KEY_REGEX
+        from app.api.base import FILTER_KEY_RE
 
         check_list = [
             ('name', False),
@@ -216,11 +215,11 @@ class BaseTestCase(CurrentAppMockMixin, UnitTestCase):
 
         for key, valid in check_list:
             if valid:
-                self.assertTrue(FILTER_KEY_REGEX.match(key),
-                                '{} should match {}'.format(key, FILTER_KEY_REGEX.pattern))
+                self.assertTrue(FILTER_KEY_RE.match(key),
+                                '{} should match {}'.format(key, FILTER_KEY_RE.pattern))
             else:
-                self.assertFalse(FILTER_KEY_REGEX.match(key),
-                                 '{} should not match {}'.format(key, FILTER_KEY_REGEX.pattern))
+                self.assertFalse(FILTER_KEY_RE.match(key),
+                                 '{} should not match {}'.format(key, FILTER_KEY_RE.pattern))
 
     def test_sq_ops_mapper(self):
         from app.api.base import SA_OPS_MAPPER

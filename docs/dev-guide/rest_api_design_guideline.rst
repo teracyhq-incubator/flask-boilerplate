@@ -71,7 +71,9 @@ HTTP Codes
 ```
 
 Note: consider between 403 and 404 to avoid data discovery leak.
-See more: http://developer.github.com/v3/auth/#basic-authentication
+See more:
+- http://developer.github.com/v3/auth/#basic-authentication
+- http://httpstatus.es/
 
 CRUD
 ----
