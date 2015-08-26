@@ -14,20 +14,44 @@ def fields_to_dict(fields):
     if not fields or len(fields.strip()) == 0:
         return result
 
-    look_behind_keys = re.findall('{(\w*?),', fields)
-    look_behind_pattern_list = ['(?<!{' + k + ')' for k in look_behind_keys]
+    # look_behind_keys = re.findall('{(\w*?),', fields)
+    # look_behind_pattern_list = ['(?<!{' + k + ')' for k in look_behind_keys]
 
-    # FIXME: '(?<!{[^,]*),<look_forward_pattern>' will trigger "look-behind requires
-    # fixed-width pattern"
-    look_behind_pattern = ''.join(look_behind_pattern_list)
+    # # FIXME: '(?<!{[^,]*),<look_forward_pattern>' will trigger "look-behind requires
+    # # fixed-width pattern"
+    # look_behind_pattern = ''.join(look_behind_pattern_list)
 
-    # FIXME: not support nested bracket: field{id,name,description{abc,def}}
-    look_forward_pattern = '(?![a-zA-Z0-9,\}:\[\]]*?})'
+    # # FIXME: not support nested bracket: field{id,name,description{abc,def}}
+    # look_forward_pattern = '(?![a-zA-Z0-9,\}:\[\]]*?})'
 
-    # sample pattern: '(?<!{id)(?<!{email),<look_forward_pattern>'
-    re_pattern = look_behind_pattern + ',' + look_forward_pattern
+    # # sample pattern: '(?<!{id)(?<!{email),<look_forward_pattern>'
+    # re_pattern = look_behind_pattern + ',' + look_forward_pattern
 
-    for key in re.split(re_pattern, fields):
+    splited_fields = []
+    word_block = ''
+    bracket_counter = 0
+    field_len = len(fields)
+    for index, word in enumerate(fields):
+
+        if word == '{':
+            bracket_counter = bracket_counter + 1
+
+        if word == '}':
+            bracket_counter = bracket_counter - 1
+        
+
+        # move to new word block
+        if word == ',' and bracket_counter == 0:
+            splited_fields.append(word_block)
+            word_block = ''
+        else:
+            word_block += word
+            
+        # add remaining word_block
+        if word_block != '' and index==field_len-1:
+            splited_fields.append(word_block)
+
+    for key in splited_fields:
         key = key.strip()
         value = {}
         if key.find('{') > -1:
@@ -46,6 +70,7 @@ def fields_to_dict(fields):
         result[key] = value
 
     return result
+
 
 
 def filter_dict_recursive(origin_dict, fields_dict):

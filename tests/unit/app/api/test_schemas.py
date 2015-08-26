@@ -54,6 +54,39 @@ class SchemasTestCase(UnitTestCase):
 
         self.assertEqual(fields_to_dict(_fields), expected)
 
+        _fields = 'id,name,roles[0:5]{id,name,description},' +\
+                    'A{12{A1,A2},34{A3,A4[300:400]},56{A7{A8{}}}}'
+
+        expected = {
+            'id': {},
+            'name': {},
+            'roles': {
+                '__slice': '0:5',
+                'id': {},
+                'name': {},
+                'description': {}
+            },
+            'A': {
+                '12': {
+                    'A1': {},
+                    'A2': {}
+                },
+                '34': {
+                    'A3': {},
+                    'A4': {
+                        '__slice': '300:400',
+                    }
+                },
+                '56': {
+                    'A7': {
+                        'A8': {}
+                    }
+                }
+            }
+        }
+
+        self.assertEqual(fields_to_dict(_fields), expected)
+
     def test_filter_dict(self):
 
         from app.api.schemas import filter_dict
