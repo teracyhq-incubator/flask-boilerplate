@@ -14,4 +14,6 @@ def hello_world():
 
 @main_bp.route('/api/versions')
 def api_versions_info():
-    return render_template('main/api_versions.json')
+    return render_template('main/api_versions.json'), 200, {
+        'Content-Type': 'application/json; charset=utf-8'
+    }

@@ -15,6 +15,8 @@ class RoleSchema(Schema):
     id = fields.Int()
     name = fields.Str()
     description = fields.Str()
+    created_at = fields.DateTime()
+    updated_at = fields.DateTime()
 
 
 class RoleListSchema(Schema):
@@ -27,6 +29,8 @@ class UserSchema(Schema):
     email = fields.Email()
     active = fields.Bool()
     confirmed_at = fields.DateTime()
+    created_at = fields.DateTime()
+    updated_at = fields.DateTime()
     roles = fields.List(fields.Nested(RoleSchema))
 
 

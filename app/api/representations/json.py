@@ -20,6 +20,6 @@ def output_json(data, code, headers=None):
     dumped = dumps(data, **settings) + '\n'
     headers = headers or {}
     resp = make_response(dumped, code)
-    resp.headers['Content-Type'] = 'application/json'
+    resp.headers['Content-Type'] = 'application/json; charset=utf-8'
     resp.headers.extend(headers)
     return resp

@@ -10,10 +10,12 @@ from ..api import (Resource, marshal_with, marshal_with_data_envelope, token_aut
 from ..extensions import auth_datastore
 from ..exceptions import UnauthorizedException
 
-from .schemas import UserSchema, UserListSchema
+from .schemas import UserSchema, UserListSchema, RoleSchema, RoleListSchema
 from .args import user_args
 
 _user_schema = UserSchema()
+_user_list_schema = UserListSchema()
+_role_list_schema = RoleListSchema()
 
 search_args = {
     'email': Arg(str, validate=validators.Email()),
@@ -40,7 +42,7 @@ class UserResource(Resource):
     @route('', methods=['GET'])
     @token_auth_required()
     @permissions_required(admin_role_permission)
-    @marshal_with(UserListSchema())
+    @marshal_with(_user_list_schema)
     @paginated
     @use_args(search_args)
     def index(self, args):

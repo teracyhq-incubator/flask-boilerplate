@@ -13,7 +13,7 @@ from ..api.validators import NumberRange, Email, password
 from ..exceptions import BadRequestException
 
 _user_args = {
-    'username': Arg(str, validate=Email, required=True),
+    'email': Arg(str, validate=Email, required=True),
     'password': Arg(str, validate=password, required=True)
 }
 
@@ -58,12 +58,12 @@ class TokenResource(Resource):
         """Login and return JWT token
         """
         args = parser.parse(utils.merge_dict(_user_args, self.common_args))
-        user = jwt_authenticate(args.get('username'), args.get('password'))
+        user = jwt_authenticate(args.get('email'), args.get('password'))
         if user:
             # TODO(hoatle): support to make response from dict
             return self._token_result(user, args.get('expires_in'))
 
         raise BadRequestException(
             'Invalid Credentials',
-            description='username or password is not correct'
+            description='email or password is not correct'
         )

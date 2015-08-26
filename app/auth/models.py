@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask_security import RoleMixin, UserMixin
 
 from ..extensions import db
@@ -13,6 +15,8 @@ class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
+    created_at = db.Column(db.DateTime(), default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime(), default=datetime.utcnow)
 
     @staticmethod
     def insert_roles():
@@ -33,10 +37,15 @@ class Role(db.Model, RoleMixin):
 
 
 class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255))
     active = db.Column(db.Boolean())
     confirmed_at = db.Column(db.DateTime())
+    created_at = db.Column(db.DateTime(), default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime(), default=datetime.utcnow)
     roles = db.relationship('Role', secondary=roles_users,
                             backref=db.backref('users', lazy='dynamic'))
+
+    def __repr__(self):
+        return '<User(id="%s", email="%s")>' % (self.id, self.email)

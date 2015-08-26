@@ -125,3 +125,15 @@ def add_filters(query, op_sequence, accepted_keys):
 
         query = query.filter(getattr(column, attr)(value))
     return query
+
+
+# thanks to http://stackoverflow.com/questions/8100166/inheriting-methods-docstrings-in-python
+def fix_docs(cls):
+    for name, func in vars(cls).items():
+        if not func.__doc__:
+            for parent in cls.__bases__:
+                parent_func = getattr(parent, name, None)
+                if parent_func and getattr(parent_func, '__doc__', None):
+                    func.__doc__ = parent_func.__doc__
+                    break
+    return cls
