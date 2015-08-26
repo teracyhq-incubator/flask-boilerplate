@@ -6,20 +6,22 @@ from webargs.flaskparser import use_args
 
 from ..auth import admin_role_permission, user_permission
 from ..api import (Resource, marshal_with, marshal_with_data_envelope, token_auth_required, one_of,
-                   anonymous_required, permissions_required, validators, paginated)
+                   anonymous_required, permissions_required, validators, paginated, extract_filters)
+from ..api.args import BoolArg
 from ..extensions import auth_datastore
 from ..exceptions import UnauthorizedException
 
-from .schemas import UserSchema, UserListSchema, RoleSchema, RoleListSchema
+from .schemas import UserSchema, UserListSchema, RoleListSchema
 from .args import user_args
 
 _user_schema = UserSchema()
 _user_list_schema = UserListSchema()
 _role_list_schema = RoleListSchema()
 
+
 search_args = {
     'email': Arg(str, validate=validators.Email()),
-    'active': Arg(bool)  # TODO(hoatle): add boolean validator here
+    'active': BoolArg
 }
 
 
@@ -44,8 +46,10 @@ class UserResource(Resource):
     @permissions_required(admin_role_permission)
     @marshal_with(_user_list_schema)
     @paginated
-    @use_args(search_args)
+    @use_args(search_args)  # TODO(hoate): add support for @extract_args to avoid boilerplate
     def index(self, args):
+        filters, args = extract_filters(args)
+        args['filters'] = filters
         return auth_datastore.find_users(**args), args
 
 
