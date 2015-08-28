@@ -45,7 +45,6 @@ def extract_filters(args):
             'value': value
         })
 
-    #args = extract_dict(args, func=lambda k, v: not FILTER_KEY_RE.match(k))
     args = extract_dict(args, ignored_keys=filter_dict.keys())
 
     return filters, args

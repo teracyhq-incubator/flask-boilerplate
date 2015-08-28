@@ -9,12 +9,6 @@ from tests.unit.app import CurrentAppMockMixin
 
 
 class BaseTestCase(CurrentAppMockMixin, UnitTestCase):
-    @patch('app.api.base.marshal_with')
-    def test_marshal_with_data_envelop(self, mock_marshal_with):
-        from app.api.base import marshal_with_data_envelope
-
-        marshal_with_data_envelope({'hi': 'there'})
-        mock_marshal_with.assert_called_once_with({'hi': 'there'}, envelope='data')
 
     @patch('app.api.base.auth_datastore')
     def test_jwt_authenticate_none(self, mock_datastore):

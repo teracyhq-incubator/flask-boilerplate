@@ -13,7 +13,6 @@ from app.exceptions import BadRequestException, UnauthorizedException
 
 
 class DecoratorsTestCase(UnitTestCase):
-
     @patch('app.api.decorators.authenticated')
     def test_anonymous_required(self, mock_authenticated):
         mock_authenticated.return_value = False
@@ -31,7 +30,6 @@ class DecoratorsTestCase(UnitTestCase):
     @patch('app.api.decorators.current_user')
     @patch('app.api.decorators.verify_jwt')
     def test_token_auth_required_unauthorized(self, mock_verify_jwt, mock_current_user):
-
         mock_current_user.is_authenticated.return_value = False
 
         @token_auth_required('realm')
@@ -54,7 +52,6 @@ class DecoratorsTestCase(UnitTestCase):
     def test_token_auth_required_authorized(self, mock_verify_jwt, mock_current_user,
                                             mock_current_app, mock_request_ctx_stack,
                                             mock_identity_changed):
-
         mock_current_user.is_authenticated.return_value = True
 
         @token_auth_required('realm')
@@ -103,7 +100,6 @@ class DecoratorsTestCase(UnitTestCase):
     @patch('app.api.decorators.session_authenticated')
     def test_auth_required(self, mock_token_authenticated, mock_http_authenticated,
                            mock_session_authenticated):
-
         mock_token_authenticated.return_value = False
         mock_http_authenticated.return_value = False
         mock_session_authenticated.return_value = False
@@ -194,7 +190,6 @@ class DecoratorsTestCase(UnitTestCase):
         self.assertRaises(UnauthorizedException, exception_handler, roles)
 
     def test_one_of(self):
-
         from app.exceptions import ApplicationException
 
         def result():
@@ -248,11 +243,11 @@ class DecoratorsTestCase(UnitTestCase):
         @one_of()
         def test5():
             return result()
+
         self.assertEqual(test5(), 'one_of', 'test5() should return {}'.format('one_of'))
 
     @patch('app.api.decorators.OffsetPagination')
     def test_paginated_one(self, mock_offset_pagination):
-
         from app.api.decorators import paginated
 
         mock_query = MagicMock()
@@ -288,7 +283,6 @@ class DecoratorsTestCase(UnitTestCase):
 
     @patch('app.api.decorators.OffsetPagination')
     def test_paginated_many(self, mock_offset_pagination):
-
         from app.api.decorators import paginated
 
         pagination = MagicMock()
@@ -332,3 +326,143 @@ class DecoratorsTestCase(UnitTestCase):
                                         call('offset', None),
                                         call('limit', None)])
         self.assertEqual(result, expected_result)
+
+    @patch('app.api.decorators.marshal_with')
+    def test_marshal_with_data_envelop(self, mock_marshal_with):
+        from app.api.decorators import marshal_with_data_envelope
+
+        marshal_with_data_envelope({'hi': 'there'})
+        mock_marshal_with.assert_called_once_with({'hi': 'there'}, envelope='data')
+
+    @patch('app.api.decorators.use_args')
+    def test_extract_args_class_method(self, mock_use_args):
+        from app.api.decorators import extract_args
+
+        search_args = {
+        }
+
+        def use_args(args):
+            return args
+
+        mock_use_args.return_value = use_args
+
+        # class method
+        class Test(object):
+            @extract_args(search_args)
+            def test(self, args, **kwargs):
+                return args
+
+        test = Test()
+
+        # missing value
+        result = test.test({
+            'email': 'test@email.com',
+            'def__lt': '2.3'
+        })
+
+        expected_result = {
+            'email': 'test@email.com',
+            'filters': [
+                {'key': 'def', 'op': 'lt', 'value': 2.3}
+            ]
+        }
+
+        self.assertEqual(result, expected_result)
+
+        # correct format
+        result = test.test({
+            'name': 'sample',
+            'abc__eq': '1',
+            'def__lt': '2',
+            'a__bc': 'def',
+        })
+
+        expected_result = {
+            'name': 'sample',
+            'a__bc': 'def',
+            'filters': [
+                {'key': 'def', 'op': 'lt', 'value': 2},
+                {'key': 'abc', 'op': 'eq', 'value': 1}
+            ]
+        }
+
+        self.assertEqual(result, expected_result)
+
+        # contain quote
+        result = test.test({
+            'name': 'sample',
+            'abc__eq': '1',
+            'def__lt': '"3"',
+        })
+
+        expected_result = {
+            'name': 'sample',
+            'filters': [
+                {'key': 'def', 'op': 'lt', 'value': '"3"'},
+                {'key': 'abc', 'op': 'eq', 'value': 1},
+            ]
+        }
+
+        self.assertEqual(result, expected_result)
+
+        # contain list
+        result = test.test({
+            'name': 'sample',
+            'abc__in': '1,2,3,t',
+        })
+
+        expected_result = {
+            'name': 'sample',
+            'filters': [
+                {'key': 'abc', 'op': 'in_', 'value': [1, 2, 3, 't']},
+            ]
+        }
+
+        self.assertEqual(result, expected_result)
+
+    @patch('app.api.decorators.use_args')
+    def test_extract_args_single_function(self, mock_use_args):
+        from app.api.decorators import extract_args
+
+        search_args = {
+        }
+
+        def use_args(args):
+            return args
+
+        mock_use_args.return_value = use_args
+
+        # function
+        # @extract_args(search_args)
+        # def test_1_arg(args):
+        # return args
+
+        @extract_args(search_args)
+        def test_2_arg(obj, args):
+            return args
+
+        # result1 = test_1_arg({
+        #     'name': 'sample',
+        #     'abc__eq': '1',
+        #     'def__lt': '"3"',
+        #     'ghi__in': 'abc,def',
+        # })
+
+        result2 = test_2_arg(None, {
+            'name': 'sample',
+            'abc__eq': '1',
+            'def__lt': '"3"',
+            'ghi__in': 'abc,def',
+        })
+
+        expected_result = {
+            'name': 'sample',
+            'filters': [
+                {'key': 'def', 'op': 'lt', 'value': '"3"'},
+                {'key': 'ghi', 'op': 'in_', 'value': ['abc', 'def']},
+                {'key': 'abc', 'op': 'eq', 'value': 1},
+            ]
+        }
+
+        # self.assertEqual(result1, expected_result)
+        self.assertEqual(result2, expected_result)

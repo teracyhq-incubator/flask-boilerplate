@@ -168,28 +168,6 @@ def marshal(data, schema=None, envelope=None):
         return data
 
 
-def marshal_with(schema=None, envelope=None):
-    """decorator for marshalling with marshmallow"""
-    def wrapper(func):
-        @wraps(func)
-        def decorated(*args, **kwargs):
-            resp = func(*args, **kwargs)
-            if isinstance(resp, tuple):
-                data, code, headers = resp
-                return marshal(data, schema, envelope), code, headers
-            else:
-                return marshal(resp, schema, envelope)
-
-        return decorated
-
-    return wrapper
-
-
-def marshal_with_data_envelope(schema):
-    """marshal with `data` envelope"""
-    return marshal_with(schema, envelope='data')
-
-
 class TokenRequiredResource(Resource):
     """The base resource class that requires token authentication"""
 

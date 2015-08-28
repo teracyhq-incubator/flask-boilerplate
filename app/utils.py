@@ -138,6 +138,7 @@ def fix_docs(cls):
                     break
     return cls
 
+
 def parse_number(s):
     try:
         return float(s)
