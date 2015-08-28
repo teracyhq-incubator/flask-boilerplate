@@ -17,7 +17,6 @@ from ..exceptions import ApplicationException, UnauthorizedException, BadRequest
 from ..pagination import OffsetPagination
 from . import (authenticated, token_authenticated, http_authenticated,
                session_authenticated)
-from .utils import extract_filters
 
 
 def anonymous_required(func):
@@ -301,19 +300,3 @@ def paginated(func):
         }
 
     return decorated
-
-
-def extract_args(arg_map, req=None, locations=None, as_kwargs=False, validate=None):
-
-    def wrapper(func):
-
-        @wraps(func)
-        @use_args(arg_map, req=req, locations=locations, as_kwargs=as_kwargs, validate=validate)
-        def decorated(resource, req_args, *args, **kwargs):
-            filters, req_args = extract_filters(req_args)
-            req_args['filters'] = filters
-
-            return func(resource, req_args, *args, **kwargs)
-
-        return decorated
-    return wrapper

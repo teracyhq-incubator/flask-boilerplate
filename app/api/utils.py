@@ -1,6 +1,6 @@
 import re
 
-from ..utils import extract_dict
+from ..utils import extract_dict, parse_number
 
 
 SUPPORTED_OPS = frozenset(['eq', 'ne', 'lt', 'le', 'gt', 'ge', 'lk', 'nl', 'in', 'ni', 'ct', 'mc'])
@@ -34,9 +34,10 @@ def extract_filters(args):
         matcher = FILTER_KEY_RE.match(key)
         key = matcher.group('key')
         operator = matcher.group('op')
+        value = parse_number(value)
 
         if operator == 'in' or operator == 'ni':
-            value = value.split(',')
+            value = map(parse_number, value.split(','))
 
         filters.append({
             'key': key,
@@ -44,6 +45,7 @@ def extract_filters(args):
             'value': value
         })
 
-    args = extract_dict(args, func=lambda k, v: not FILTER_KEY_RE.match(k))
+    #args = extract_dict(args, func=lambda k, v: not FILTER_KEY_RE.match(k))
+    args = extract_dict(args, ignored_keys=filter_dict.keys())
 
     return filters, args
