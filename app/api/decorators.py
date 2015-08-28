@@ -7,6 +7,7 @@ from functools import wraps
 from flask import current_app, _request_ctx_stack
 from flask_principal import Identity, identity_changed
 from flask_jwt import current_user, verify_jwt
+from webargs.flaskparser import use_args
 
 from ..auth import (permissions_required as auth_permissions_required,
                     permissions_accepted as auth_permissions_accepted,
@@ -16,6 +17,7 @@ from ..exceptions import ApplicationException, UnauthorizedException, BadRequest
 from ..pagination import OffsetPagination
 from . import (authenticated, token_authenticated, http_authenticated,
                session_authenticated)
+from .utils import extract_filters
 
 
 def anonymous_required(func):
@@ -299,3 +301,45 @@ def paginated(func):
         }
 
     return decorated
+
+
+def marshal_with(schema=None, envelope=None):
+    """decorator for marshalling with marshmallow"""
+    def wrapper(func):
+        @wraps(func)
+        def decorated(*args, **kwargs):
+            resp = func(*args, **kwargs)
+            if isinstance(resp, tuple):
+                data, code, headers = resp
+                return marshal(data, schema, envelope), code, headers
+            else:
+                return marshal(resp, schema, envelope)
+
+        return decorated
+
+    return wrapper
+
+
+def marshal_with_data_envelope(schema):
+    """marshal with `data` envelope"""
+    return marshal_with(schema, envelope='data')
+
+
+def extract_args(arg_map, req=None, locations=None, as_kwargs=False, validate=None):
+    """
+    Specific decorator to handle request filters
+
+    for example: /api/v1.0/users?created_at__gt=2009-10-26T04:47:09Z
+
+    then the filters will include: {'key': 'created_at', 'op': 'gt', 'value': '2009-10-26T04:47:09Z'}
+    """
+    def wrapper(func):
+        @wraps(func)
+        @use_args(arg_map, req=req, locations=locations, as_kwargs=as_kwargs, validate=validate)
+        def decorated(resource, req_args, *args, **kwargs):
+            filters, req_args = extract_filters(req_args)
+            req_args['filters'] = filters
+
+            return func(resource, req_args, *args, **kwargs)
+        return decorated
+    return wrapper

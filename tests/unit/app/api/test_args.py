@@ -6,6 +6,8 @@ from app.api.args import BoolArg
 
 from tests.unit import UnitTestCase
 
+from mock import patch
+
 
 class ArgsTestCase(UnitTestCase):
 

@@ -137,3 +137,10 @@ def fix_docs(cls):
                     func.__doc__ = parent_func.__doc__
                     break
     return cls
+
+
+def parse_number(s):
+    try:
+        return float(s)
+    except ValueError:
+        return int(s) if s.isdigit() else s

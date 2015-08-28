@@ -109,6 +109,8 @@ $ pip install --upgrade httpie
 $ pip install --upgrade httpie-jwt-auth
 ```
 
+Note: should use `sudo` to install for system wide usage.
+
 after that: `$ http --version` should print out: `0.9.2` or something similar on the screen.
 
 **/api/versions**
