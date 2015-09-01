@@ -156,18 +156,6 @@ class Resource(FlaskView):
         return super(Resource, cls).build_route_name(method_name)
 
 
-def marshal(data, schema=None, envelope=None):
-    """Marshal data with marshmallow"""
-    if schema:
-        result = schema.dump(data)  # TODO(hoatle): handle error?
-        data = result.data
-
-    if envelope:
-        return {envelope: data}
-    else:
-        return data
-
-
 class TokenRequiredResource(Resource):
     """The base resource class that requires token authentication"""
 

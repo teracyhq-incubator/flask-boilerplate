@@ -48,3 +48,15 @@ def extract_filters(args):
     args = extract_dict(args, ignored_keys=filter_dict.keys())
 
     return filters, args
+
+
+def marshal(data, schema=None, envelope=None):
+    """Marshal data with marshmallow"""
+    if schema:
+        result = schema.dump(data)  # TODO(hoatle): handle error?
+        data = result.data
+
+    if envelope:
+        return {envelope: data}
+    else:
+        return data

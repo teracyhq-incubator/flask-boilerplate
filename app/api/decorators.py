@@ -17,7 +17,7 @@ from ..exceptions import ApplicationException, UnauthorizedException, BadRequest
 from ..pagination import OffsetPagination
 from . import (authenticated, token_authenticated, http_authenticated,
                session_authenticated)
-from .utils import extract_filters
+from .utils import extract_filters, marshal
 
 
 def anonymous_required(func):
