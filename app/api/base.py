@@ -124,9 +124,9 @@ class Resource(FlaskView):
         'delete': ['DELETE'],
         'index': ['GET'],
         'create': ['POST'],
-        'show': ['GET'],
+        'read': ['GET'],
         'update': ['PUT'],
-        'destroy': ['DELETE']
+        'list': ['GET']
     }
 
     @classmethod

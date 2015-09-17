@@ -46,14 +46,14 @@ class UserResource(Resource):
     @permissions_required(admin_role_permission)
     @marshal_with(_user_list_schema)
     @paginated
-    @extract_args(search_args)  # TODO(hoate): add support for @extract_args to avoid boilerplate
-    def index(self, args):
+    @extract_args(search_args)
+    def list(self, args):
         return auth_datastore.find_users(**args), args
 
 
     @token_auth_required()
     @marshal_with_data_envelope(_user_schema)
-    def show(self, id):
+    def read(self, id):
         id = self._check_current_user_or_admin_role(id)
         user = auth_datastore.read_user(id)
         return user
@@ -64,7 +64,7 @@ class UserResource(Resource):
     @use_args(user_args)
     def create(self, args):
         user = auth_datastore.create_user(**args)
-        location = url_for('.users:show', _external=True, **{'id': user.id})
+        location = url_for('.users:read', _external=True, **{'id': user.id})
         return user, 201, {
             'Location': location
         }
@@ -80,6 +80,6 @@ class UserResource(Resource):
         return auth_datastore.update_user(id, **args)
 
     @permissions_required(admin_role_permission)
-    def destroy(self, id):
+    def delete(self, id):
         auth_datastore.delete_user(id)
         return ''
