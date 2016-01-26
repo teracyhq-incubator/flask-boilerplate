@@ -3,7 +3,7 @@ from datetime import timedelta
 
 from flask import current_app
 from flask_security import current_user
-from webargs import Arg
+from webargs import fields
 from webargs.flaskparser import parser
 
 from .. import utils
@@ -13,8 +13,8 @@ from ..api.validators import NumberRange, Email, password
 from ..exceptions import BadRequestException
 
 _user_args = {
-    'email': Arg(str, validate=Email, required=True),
-    'password': Arg(str, validate=password, required=True)
+    'email': fields.Str(validate=Email, required=True),
+    'password': fields.Str(validate=password, required=True)
 }
 
 
@@ -39,7 +39,7 @@ class TokenResource(Resource):
         max_expires_in = current_app.config.get('JWT_EXPIRES_IN_MAX')
 
         self.common_args = {
-            'expires_in': Arg(int, validate=NumberRange(min_expires_in, max_expires_in))
+            'expires_in': fields.Integer(validate=NumberRange(min_expires_in, max_expires_in))
         }
 
     @one_of(http_auth_required, token_auth_required())

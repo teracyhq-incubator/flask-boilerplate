@@ -1,6 +1,6 @@
 from flask import url_for
 from flask_classy import route
-from webargs import Arg
+from webargs import fields
 from webargs.flaskparser import use_args
 
 from ..api import (TokenRequiredResource, marshal_with, marshal_with_data_envelope,
@@ -15,8 +15,8 @@ from .args import role_args
 _role_schema = RoleSchema()
 
 search_args = {
-    'name': Arg(str),
-    'description': Arg(str)
+    'name': fields.Str(),
+    'description': fields.Str()
 }
 
 

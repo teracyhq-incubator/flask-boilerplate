@@ -10,22 +10,22 @@ from app.api.auth import (token_authenticated, http_authenticated, session_authe
 
 class AuthTestCase(UnitTestCase):
 
-    @patch('app.api.auth.verify_jwt')
-    def test_verify_token_auth(self, mock_verify_jwt):
+    @patch('app.api.auth._jwt_required')
+    def test_verify_token_auth(self, mock_jwt_required):
 
         from app.api.auth import verify_token_auth
         from app.api.auth import JWTError
 
-        mock_verify_jwt.side_effect = JWTError('error', 'description')
+        mock_jwt_required.side_effect = JWTError('error', 'description')
 
         self.assertFalse(verify_token_auth(), 'verify_token_auth() should be False')
-        mock_verify_jwt.assert_called_once_with(None)
+        mock_jwt_required.assert_called_once_with(None)
 
-        mock_verify_jwt.reset_mock()
-        mock_verify_jwt.side_effect = None
+        mock_jwt_required.reset_mock()
+        mock_jwt_required.side_effect = None
 
         self.assertTrue(verify_token_auth('test'), 'verify_token_auth() should be True')
-        mock_verify_jwt.assert_called_once_with('test')
+        mock_jwt_required.assert_called_once_with('test')
 
     @patch('app.api.auth._check_http_auth')
     def test_verify_http_auth(self, mock_check_http_auth):

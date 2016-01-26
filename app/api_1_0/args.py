@@ -1,13 +1,13 @@
-from webargs import Arg
+from webargs import fields
 
 from ..api.validators import Email, password
 
 user_args = {
-    'email': Arg(str, validate=Email, required=True),
-    'password': Arg(str, validate=password, required=True)
+    'email': fields.Str(validate=Email, required=True),
+    'password': fields.Str(validate=password, required=True)
 }
 
 role_args = {
-    'name': Arg(str, required=True),
-    'description': Arg(str, required=True)
+    'name': fields.Str(required=True),
+    'description': fields.Str(required=True)
 }

@@ -270,6 +270,7 @@ class SchemasTestCase(UnitTestCase):
             'id': 2,
             'email': 'test2@example.com',
             'active': False,
+            'roles': []
         }]
 
         desired_obj_list = [{
@@ -320,6 +321,7 @@ class SchemasTestCase(UnitTestCase):
             'id': 2,
             'email': 'test2@example.com',
             'active': False,
+            'roles': []
         }]
 
         desired_obj_list = [{

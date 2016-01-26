@@ -6,7 +6,7 @@ from functools import wraps
 
 from flask import current_app, _request_ctx_stack
 from flask_principal import Identity, identity_changed
-from flask_jwt import current_user, verify_jwt
+from flask_jwt import current_identity, _jwt_required
 from webargs.flaskparser import use_args
 
 from ..auth import (permissions_required as auth_permissions_required,
@@ -44,11 +44,11 @@ def token_auth_required(realm=None):
     def wrapper(func):
         @wraps(func)
         def decorated(*args, **kwargs):
-            verify_jwt(realm)
-            if current_user and current_user.is_authenticated():
+            _jwt_required(realm)
+            if current_identity and current_identity.is_authenticated():
                 app = current_app._get_current_object()
-                _request_ctx_stack.top.user = current_user
-                identity_changed.send(app, identity=Identity(current_user.id))
+                _request_ctx_stack.top.user = current_identity
+                identity_changed.send(app, identity=Identity(current_identity.id))
                 return func(*args, **kwargs)
             raise UnauthorizedException('Invalid Token', description='token is invalid')
 

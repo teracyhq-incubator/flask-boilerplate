@@ -5,7 +5,7 @@
 from flask import g
 from flask_security import current_user
 from flask_security.decorators import _check_http_auth
-from flask_jwt import verify_jwt, JWTError
+from flask_jwt import _jwt_required, JWTError
 
 
 def verify_token_auth(realm=None):
@@ -15,7 +15,7 @@ def verify_token_auth(realm=None):
     :return:
     """
     try:
-        verify_jwt(realm)
+        _jwt_required(realm)
     except JWTError:
         return False
     return True

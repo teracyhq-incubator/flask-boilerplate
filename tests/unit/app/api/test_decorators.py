@@ -27,10 +27,10 @@ class DecoratorsTestCase(UnitTestCase):
         mock_authenticated.return_value = True
         self.assertRaises(BadRequestException, test)
 
-    @patch('app.api.decorators.current_user')
-    @patch('app.api.decorators.verify_jwt')
-    def test_token_auth_required_unauthorized(self, mock_verify_jwt, mock_current_user):
-        mock_current_user.is_authenticated.return_value = False
+    @patch('app.api.decorators.current_identity')
+    @patch('app.api.decorators._jwt_required')
+    def test_token_auth_required_unauthorized(self, mock_jwt_required, mock_current_identity):
+        mock_current_identity.is_authenticated.return_value = False
 
         @token_auth_required('realm')
         def test():
@@ -41,18 +41,18 @@ class DecoratorsTestCase(UnitTestCase):
         ex = uae.exception
         self.assertIsInstance(ex, UnauthorizedException)
         self.assertTrue(ex.message, 'Invalid Token')
-        mock_verify_jwt.assert_called_once_with('realm')
-        mock_current_user.is_authenticated.assert_called_once_with()
+        mock_jwt_required.assert_called_once_with('realm')
+        mock_current_identity.is_authenticated.assert_called_once_with()
 
     @patch('app.api.decorators.identity_changed')
     @patch('app.api.decorators._request_ctx_stack')
     @patch('app.api.decorators.current_app')
-    @patch('app.api.decorators.current_user')
-    @patch('app.api.decorators.verify_jwt')
-    def test_token_auth_required_authorized(self, mock_verify_jwt, mock_current_user,
+    @patch('app.api.decorators.current_identity')
+    @patch('app.api.decorators._jwt_required')
+    def test_token_auth_required_authorized(self, mock_jwt_required, mock_current_identity,
                                             mock_current_app, mock_request_ctx_stack,
                                             mock_identity_changed):
-        mock_current_user.is_authenticated.return_value = True
+        mock_current_identity.is_authenticated.return_value = True
 
         @token_auth_required('realm')
         def test():
@@ -61,10 +61,10 @@ class DecoratorsTestCase(UnitTestCase):
         self.assertEqual(test(), 'token_auth_required',
                          'test() should return {}'.format('token_auth_required'))
 
-        mock_verify_jwt.assert_called_once_with('realm')
-        mock_current_user.is_authenticated.assert_called_once_with()
+        mock_jwt_required.assert_called_once_with('realm')
+        mock_current_identity.is_authenticated.assert_called_once_with()
         mock_current_app._get_current_object.assert_called_once_with()
-        self.assertEqual(mock_request_ctx_stack.top.user, mock_current_user)
+        self.assertEqual(mock_request_ctx_stack.top.user, mock_current_identity)
         self.assertEqual(mock_identity_changed.send.call_count, 1)
 
     @patch('app.api.decorators.http_authenticated')

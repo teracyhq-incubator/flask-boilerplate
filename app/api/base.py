@@ -2,7 +2,7 @@
 
 """base api"""
 
-from functools import partial, wraps
+from functools import partial
 from datetime import datetime, timedelta
 
 import inflection
@@ -34,7 +34,7 @@ def jwt_authenticate(email, pwd):
         return user
 
 
-@jwt.user_handler
+@jwt.identity_handler
 def jwt_load_user(payload):
     """Register jwt user handler
 
@@ -46,7 +46,7 @@ def jwt_load_user(payload):
     return AnonymousUser()
 
 
-@jwt.payload_handler
+@jwt.jwt_payload_handler
 def jwt_make_payload(user, expiration_delta=None, leeway=None):
     """Register jwt payload handler
 
@@ -73,7 +73,7 @@ def jwt_make_payload(user, expiration_delta=None, leeway=None):
     }
 
 
-@jwt.encode_handler
+@jwt.jwt_encode_handler
 def jwt_encode_payload(payload):
     """Register jwt encode handler
 
@@ -83,7 +83,7 @@ def jwt_encode_payload(payload):
                           algorithm=current_app.config['JWT_ALGORITHM'])
 
 
-@jwt.decode_handler
+@jwt.jwt_decode_handler
 def jwt_decode_token(token):
     """Register jwt decode handler
 
@@ -93,7 +93,7 @@ def jwt_decode_token(token):
                           algorithms=current_app.config['JWT_ALGORITHMS'])
 
 
-@jwt.error_handler
+@jwt.jwt_error_handler
 def jwt_error(ex):
     """Register jwt error handler
 

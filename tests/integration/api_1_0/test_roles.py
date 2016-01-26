@@ -11,7 +11,7 @@ class RoleResourceTestCase(IntegrationTestCase):
         resp = json.loads(rv.data)
         error = resp.get('error')
         self.assertEqual(error.get('message'), 'Authorization Required')
-        self.assertEqual(error.get('description'), 'Authorization header was missing')
+        self.assertEqual(error.get('description'), 'Request does not contain an access token')
 
     def test_index_invalid_perm(self):
         pass
@@ -25,7 +25,7 @@ class RoleResourceTestCase(IntegrationTestCase):
         resp = json.loads(rv.data)
         error = resp.get('error')
         self.assertEqual(error.get('message'), 'Authorization Required')
-        self.assertEqual(error.get('description'), 'Authorization header was missing')
+        self.assertEqual(error.get('description'), 'Request does not contain an access token')
 
     def test_create_invalid_perm(self):
         pass
@@ -40,7 +40,7 @@ class RoleResourceTestCase(IntegrationTestCase):
         resp = json.loads(rv.data)
         error = resp.get('error')
         self.assertEqual(error.get('message'), 'Authorization Required')
-        self.assertEqual(error.get('description'), 'Authorization header was missing')
+        self.assertEqual(error.get('description'), 'Request does not contain an access token')
 
     def test_show_invalid_perm(self):
         pass
@@ -54,7 +54,7 @@ class RoleResourceTestCase(IntegrationTestCase):
         resp = json.loads(rv.data)
         error = resp.get('error')
         self.assertEqual(error.get('message'), 'Authorization Required')
-        self.assertEqual(error.get('description'), 'Authorization header was missing')
+        self.assertEqual(error.get('description'), 'Request does not contain an access token')
 
     def test_update_invalid_perm(self):
         pass
@@ -68,7 +68,7 @@ class RoleResourceTestCase(IntegrationTestCase):
         resp = json.loads(rv.data)
         error = resp.get('error')
         self.assertEqual(error.get('message'), 'Authorization Required')
-        self.assertEqual(error.get('description'), 'Authorization header was missing')
+        self.assertEqual(error.get('description'), 'Request does not contain an access token')
 
     def test_destroy_invalid_perm(self):
         pass

@@ -1,31 +1,31 @@
 # requirements/common.txt: common dependency requirements
 
-flask
-flask-script
-gunicorn
+flask>=0.10.1,<0.11.0
+flask-script>=2.0.5,<2.1.0
+gunicorn>=19.4.5,<19.5.0
 
 # extensions
-flask-debugtoolbar
-flask-heroku
-Flask-Migrate
-Flask-Security
-Flask-Admin
-py-bcrypt
-marshmallow
-webargs
-git+https://github.com/teracyhq/flask-classy.git@v0.7.0#egg=flask-classy
-flask-cors
-PyJWT
-Flask-JWT
+flask-debugtoolbar>=0.10.0,<0.11.0
+flask-heroku>=0.1.9,<0.2.0
+Flask-Migrate>=1.7.0,<1.8.0
+Flask-Security>=1.7.5,<1.8.0
+Flask-Admin>=1.4.0,<1.5.0
+py-bcrypt>=0.4,<0.5
+marshmallow>=2.4.2,<2.5.0
+webargs>=1.2.0,<1.3.0
+git+https://github.com/teracyhq/flask-classy.git@v0.7.1#egg=flask-classy
+flask-cors>=2.1.2,<2.2.0
+PyJWT>=1.4.0,<1.5.0
+Flask-JWT>=0.3.2,<0.4.0
 
-MySQL-python
-sqlalchemy-utils
-psycopg2
+MySQL-python>=1.2.5,<1.3.0
+sqlalchemy-utils>=0.31.4,<0.32.0
+psycopg2>=2.6.1,<2.7.0
 
 # utilities
-inflection
-factory_boy
-fake-factory
+inflection>=0.3.1,<0.4.0
+factory_boy>=2.6.0,<2.7.0
+fake-factory>=0.5.3,<0.6.0
 
 # analytics
-newrelic
+newrelic>=2.60.0.46,<2.70.0.0

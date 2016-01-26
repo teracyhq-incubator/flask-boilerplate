@@ -1,13 +1,12 @@
 from flask import url_for
 from flask_security import current_user
 from flask_classy import route
-from webargs import Arg
+from webargs import fields
 from webargs.flaskparser import use_args
 
 from ..auth import admin_role_permission, user_permission
 from ..api import (Resource, marshal_with, marshal_with_data_envelope, token_auth_required, one_of,
                    anonymous_required, permissions_required, validators, paginated, extract_args)
-from ..api.args import BoolArg
 from ..extensions import auth_datastore
 from ..exceptions import UnauthorizedException
 
@@ -20,8 +19,8 @@ _role_list_schema = RoleListSchema()
 
 
 search_args = {
-    'email': Arg(str, validate=validators.Email()),
-    'active': BoolArg
+    'email': fields.Str(validate=validators.Email()),
+    'active': fields.Boolean()
 }
 
 
@@ -72,8 +71,8 @@ class UserResource(Resource):
     @route('<id>', methods=['PUT'])
     @marshal_with_data_envelope(_user_schema)
     @use_args({
-        'email': Arg(str, validate=validators.Email()),
-        'active': Arg(bool)
+        'email': fields.Str(validate=validators.Email()),
+        'active': fields.Boolean()
     })
     def update(self, args, id):
         id = self._check_current_user_or_admin_role(id)

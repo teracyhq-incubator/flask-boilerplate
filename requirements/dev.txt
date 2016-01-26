@@ -3,11 +3,13 @@
 -r common.txt
 
 # style check
-coverage
-flake8
-nose
-pylint
+coverage>=4.0.3,<4.1.0
+flake8>=2.5.1,<2.6.0
+nose>=1.3.7,<1.4.0
+pylint>=1.5.3,<1.6.0
 
 # test
-mock
-funcsigs
+mock>=1.3.0,<1.4.0
+funcsigs>=0.4,<0.5
+
+ipython # should always use the latest versions
